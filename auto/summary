@@ -1,0 +1,19 @@
+
+# Copyright (C) bin wang
+# Copyright (C) NetEase, Inc.
+
+echo
+echo "Configuration summary"
+
+
+echo
+
+
+cat << END
+  intercept path prefix: "$TC_PREFIX"
+  intercept binary file: "$TC_SBIN_PATH"
+  intercept configuration prefix: "$TC_CONF_PREFIX"
+  intercept configuration file: "$TC_CONF_PATH"
+  intercept pid file: "$TC_PID_PATH"
+END
+

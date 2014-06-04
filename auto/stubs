@@ -1,0 +1,4 @@
+
+have=TC_SUPPRESS_WARN . auto/have
+
+have=TC_SMP . auto/have

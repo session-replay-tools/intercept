@@ -1,0 +1,114 @@
+
+# Copyright (C) bin wang
+# Copyright (C) NetEase, Inc.
+
+help=no
+
+TC_PREFIX=
+TC_SBIN_PATH=
+TC_CONF_PREFIX=
+TC_CONF_PATH=
+TC_PID_PATH=
+
+CC=${CC:-cc}
+TC_OBJS=objs
+
+TC_PCAP_CAPTURE=NO
+TC_MILLION_SUPPORT=NO
+TC_ADVANCED=YES
+TC_NFQUEUE=NO
+TC_COMBINED=YES
+TC_SINGLE=NO
+TC_PAYLOAD=NO
+TC_DNAT=NO
+TC_DEBUG=NO
+TC_PCAP_NEEDED=NO
+
+TC_CC_OPT=
+TC_LD_OPT=
+
+opt=
+
+for option
+do
+    opt="$opt `echo $option | sed -e \"s/\(--[^=]*=\)\(.* .*\)/\1'\2'/\"`"
+
+    case "$option" in
+        -*=*) value=`echo "$option" | sed -e 's/[-_a-zA-Z0-9]*=//'` ;;
+           *) value="" ;;
+    esac
+
+    case "$option" in
+        --help)                          help=yes                  ;;
+
+        --prefix=)                       TC_PREFIX="!"             ;;
+        --prefix=*)                      TC_PREFIX="$value"        ;;
+        --sbin-path=*)                   TC_SBIN_PATH="$value"     ;;
+        --conf-path=*)                   TC_CONF_PATH="$value"     ;;
+        --pid-path=*)                    TC_PID_PATH="$value"      ;;
+        --builddir=*)                    TC_OBJS="$value"          ;;
+        --with-cc=*)                     CC="$value"               ;;
+        --with-cc-opt=*)                 TC_CC_OPT="$value"        ;;
+        --with-ld-opt=*)                 TC_LD_OPT="$value"        ;;
+
+        --single)                        TC_SINGLE=YES             ;;
+        --pcap-capture)                  TC_PCAP_CAPTURE=YES       ;;
+        --million)                       TC_MILLION_SUPPORT=YES    ;;
+        --dnat)                          TC_DNAT=YES               ;;
+        --traditional)                   TC_ADVANCED=NO            ;;
+        --nfqueue)                       TC_NFQUEUE=YES            ;;
+        --disable-combined)              TC_COMBINED=NO            ;;
+        --with-resp-payload)             TC_PAYLOAD=YES            ;;
+        --with-debug)                    TC_DEBUG=YES              ;;
+
+        *)
+            echo "$0: error: invalid option \"$option\""
+            exit 1
+        ;;
+    esac
+done
+
+
+TC_CONFIGURE="$opt"
+
+
+if [ $help = yes ]; then
+
+cat << END
+
+  --help                             print this message
+
+  --prefix=PATH                      set installation prefix
+  --sbin-path=PATH                   set intercept binary pathname
+  --pid-path=PATH                    set intercept.pid pathname
+
+  --builddir=DIR                     set build directory
+
+  --with-cc=PATH                     set C compiler pathname
+  --with-cpp=PATH                    set C preprocessor pathname
+  --with-cc-opt=OPTIONS              set additional C compiler options
+  --with-ld-opt=OPTIONS              set additional linker options
+  --with-debug                       enable debug logging
+  --with-resp-playload               return payload of the response packet
+
+  --traditional                      run intercept at traditional mode
+  --single                           run intercept at non-distributed mode
+  --pcap-capture                     capture packets at the data link 
+  --million                          support comet
+  --dnat                             support dnat
+  --nfqueue                          run intercept at nfqueue mode (ip queue will be used
+                                     by default and this option is only valid if the
+                                     linux kernel version is less than 3.5, otherwise
+                                     nfqueue will be used by default and ip queue is no
+                                     longer supported by the linux kernel)
+  --disable-combined                 disable combined response mode        
+
+END
+
+    exit 1
+fi
+
+
+TC_CONF_PREFIX=`dirname $TC_CONF_PATH`
+TC_PID_PATH=${TC_PID_PATH:-logs/intercept.pid}
+
