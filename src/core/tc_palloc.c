@@ -10,6 +10,10 @@ tc_create_pool(size_t size, size_t pool_max)
 {
     tc_pool_t  *p;
 
+    if (size < TC_MIN_POOL_SIZE) {
+        size = TC_MIN_POOL_SIZE;
+    }
+
     p = tc_memalign(TC_POOL_ALIGNMENT, size);
     if (p != NULL) {
         p->d.last = (u_char *) p + sizeof(tc_pool_t);
@@ -19,7 +23,7 @@ tc_create_pool(size_t size, size_t pool_max)
 
         size = size - sizeof(tc_pool_t);
         
-        if (pool_max) {
+        if (pool_max && size >= pool_max) {
             p->max = pool_max;
         } else {
             p->max = (size < TC_MAX_ALLOC_FROM_POOL) ? 
