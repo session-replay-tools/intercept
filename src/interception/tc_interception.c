@@ -61,11 +61,12 @@ tc_msg_event_accept(tc_event_t *rev)
     return TC_OK;
 }
 
+
 static int 
 tc_msg_event_proc(tc_event_t *rev)
 {
+    msg_clt_t       msg;
     register int    fd, version;
-    msg_clt_t    msg;
     tunnel_basic_t *tunnel;
 
     fd = rev->fd;
@@ -137,6 +138,7 @@ tc_msg_event_proc(tc_event_t *rev)
     return TC_OK;
 }
 
+
 void
 server_stat(tc_event_timer_t *evt)
 {
@@ -149,6 +151,7 @@ server_stat(tc_event_timer_t *evt)
 #endif
     tc_event_update_timer(evt, OUTPUT_INTERVAL);
 }
+
 
 #if (TC_COMBINED)
 void
@@ -166,9 +169,9 @@ static int tc_nfq_proc_packet(struct nfq_q_handle *qh,
 {
     int                          id = 0, payload_len, ret,
                                  pass_through_flag;
+    tc_iph_t                    *ip;
     register int                 i;
     unsigned char               *payload;
-    tc_iph_t              *ip;
     struct nfqnl_msg_packet_hdr *ph;
 
     ph = nfq_get_msg_packet_hdr(nfa);
@@ -221,8 +224,8 @@ static int tc_nfq_proc_packet(struct nfq_q_handle *qh,
 static int
 tc_nfq_event_proc(tc_event_t *rev)
 {
-    int             rv = 0;
-    char            buffer[65536];
+    int   rv = 0;
+    char  buffer[65536];
 
     if (tc_nfq_socket_rcv(rev->fd, buffer, 65536, &rv) == TC_ERR) {
         return TC_ERR;
@@ -239,8 +242,8 @@ static int
 dispose_netlink_packet(int fd, int verdict, unsigned long packet_id)
 {
     struct nlmsghdr        *nl_header = (struct nlmsghdr *) buffer;
-    struct ipq_verdict_msg *ver_data;
     struct sockaddr_nl      addr;
+    struct ipq_verdict_msg *ver_data;
 
     /*
      * The IPQM_VERDICT message is used to communicate with
@@ -281,9 +284,9 @@ static int
 tc_nl_event_proc(tc_event_t *rev)
 {
     char            buffer[65536];
+    tc_iph_t       *ip;
     register int    i, pass_through_flag;
     unsigned long   packet_id;
-    tc_iph_t       *ip;
 
     if (tc_nl_socket_rcv(rev->fd, buffer, 65536) == TC_ERR) {
         return TC_ERR;

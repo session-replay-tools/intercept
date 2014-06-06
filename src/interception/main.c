@@ -1,5 +1,5 @@
 /*
- *  TCPCopy 1.0 series - An online replication tool for TCP based applications
+ *  Intercept 1.0 series 
  *
  *  Copyright 2014 Netease, Inc.  All rights reserved.
  *  Use and distribution licensed under the BSD license.  See
@@ -39,6 +39,7 @@ signal_handler(int sig)
 {
     tc_over = sig;
 }
+
 
 static signal_t signals[] = {
     { "SIGTERM", SIGTERM, 0,    signal_handler },

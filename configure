@@ -94,7 +94,7 @@ fi
 . auto/cc/conf
 . auto/headers
 . auto/os/conf
-. auto/unix
+. auto/linux
 
 
 case ".$TC_PREFIX" in

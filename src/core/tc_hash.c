@@ -18,6 +18,7 @@ hash_node_malloc(tc_pool_t *pool, uint64_t key, void *data)
     return hn;
 }
 
+
 static p_link_node
 hash_find_node(hash_table *table, uint64_t key)
 {
@@ -90,6 +91,7 @@ hash_find(hash_table *table, uint64_t key)
 
     return NULL;
 }
+
 
 bool
 hash_add(hash_table *table, tc_pool_t *pool, uint64_t key, void *data)

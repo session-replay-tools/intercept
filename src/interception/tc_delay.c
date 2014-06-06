@@ -61,7 +61,7 @@ delay_table_add(uint64_t key, struct msg_server_s *msg)
 {
     tc_pool_t           *pool;
     p_link_node          ln;
-    delay_sess_t     *s;
+    delay_sess_t        *s;
     struct msg_server_s *cmsg;
 
     s = (delay_sess_t *) hash_find(table, key);
@@ -100,9 +100,9 @@ delay_table_add(uint64_t key, struct msg_server_s *msg)
 void
 delay_table_snd(uint64_t key, int fd)
 {
-    link_list           *msg_list;
-    p_link_node          first;
-    msg_server_t        *msg ;
+    link_list        *msg_list;
+    p_link_node       first;
+    msg_server_t     *msg ;
     delay_sess_t     *s;
 
     s = (delay_sess_t *) hash_find(table, key);
@@ -134,7 +134,6 @@ delay_table_snd(uint64_t key, int fd)
 void
 delay_table_destroy()
 {
-
     if (table != NULL) {
 
         tc_log_info(LOG_NOTICE, 0, "destroy delay table,total:%u",

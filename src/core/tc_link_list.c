@@ -20,6 +20,7 @@ link_node_malloc(tc_pool_t *pool, void *data)
     return p;
 }
 
+
 link_list *
 link_list_create(tc_pool_t *pool)
 {
@@ -33,6 +34,7 @@ link_list_create(tc_pool_t *pool)
 
     return l;
 }
+
 
 int
 link_list_clear(tc_pool_t *pool, link_list *l)

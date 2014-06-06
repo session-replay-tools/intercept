@@ -2,11 +2,11 @@
 #include <intercept.h>
 
 
-static uint64_t        tot_copy_resp_packs = 0; 
-static uint64_t        tot_resp_packs = 0; 
-static uint64_t        tot_router_items = 0; 
+static uint64_t     tot_copy_resp_packs = 0; 
+static uint64_t     tot_resp_packs = 0; 
+static uint64_t     tot_router_items = 0; 
 #if (TC_PCAP)
-static  pcap_t        *pcap_map[MAX_FD_NUM];
+static  pcap_t     *pcap_map[MAX_FD_NUM];
 #endif
 
 static int tc_msg_event_proc(tc_event_t *rev);
@@ -64,8 +64,8 @@ tc_msg_event_accept(tc_event_t *rev)
 static int 
 tc_msg_event_proc(tc_event_t *rev)
 {
+    msg_clt_t       msg;
     register int    fd, version;
-    msg_clt_t    msg;
     tunnel_basic_t *tunnel;
 
     fd = rev->fd;
@@ -158,14 +158,15 @@ server_push(tc_event_timer_t *evt)
 }
 #endif
 
+
 static void 
 resp_dispose(tc_iph_t *ip)
 {
-    uint16_t             port, size_ip, size_tcp, tot_len;
-    uint32_t             ip_addr;
-    tc_tcph_t           *tcp;
-    register int         i, passed;
-    ip_port_pair_t      *pair;
+    uint16_t           port, size_ip, size_tcp, tot_len;
+    uint32_t           ip_addr;
+    tc_tcph_t         *tcp;
+    register int       i, passed;
+    ip_port_pair_t    *pair;
 
     if (ip->protocol == IPPROTO_TCP) {
         tot_resp_packs++;
@@ -218,6 +219,7 @@ resp_dispose(tc_iph_t *ip)
         }
     }
 }
+
 
 #if (TC_PCAP)
 static void 
@@ -388,6 +390,7 @@ sniff_init(tc_event_loop_t *event_loop)
     return TC_OK;
 
 }
+
 
 int
 server_init(tc_event_loop_t *event_loop, char *ip, uint16_t port)

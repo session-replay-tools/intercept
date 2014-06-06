@@ -259,21 +259,21 @@ static int router_get(uint32_t key)
 void
 router_update(bool old, tc_iph_t *ip)
 {
-    int                     fd;
+    int                   fd;
 #if (!TC_SINGLE)
 #if (TC_MILLION_SUPPORT)
-    uint64_t                key;
+    uint64_t              key;
 #else
-    uint32_t                key;
+    uint32_t              key;
 #endif
 #endif
-    uint32_t                size_ip, size_tcp, tot_len;
+    uint32_t              size_ip, size_tcp, tot_len;
 #if (TC_PAYLOAD)
-    uint32_t                cont_len;
-    unsigned char          *payload, *p;
+    uint32_t              cont_len;
+    unsigned char        *payload, *p;
 #endif
-    msg_server_t            msg;
-    tc_tcph_t        *tcp;
+    tc_tcph_t            *tcp;
+    msg_server_t          msg;
 
     size_ip = ip->ihl << 2;
     tcp = (tc_tcph_t *) ((char *) ip + size_ip);
