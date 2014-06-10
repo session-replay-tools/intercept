@@ -256,16 +256,24 @@ static int router_get(uint32_t key)
 #endif
 
 
+#if (TC_SINGLE)
+static inline int
+choose_fd(uint32_t key)
+{
+    int index = ((int) (key & 0x000000FF)) % srv_settings.s_fd_num;
+
+    return srv_settings.s_router_fds[index];
+}
+#endif
+
 void
 router_update(bool old, tc_iph_t *ip)
 {
     int                   fd;
-#if (!TC_SINGLE)
 #if (TC_MILLION_SUPPORT)
     uint64_t              key;
 #else
     uint32_t              key;
-#endif
 #endif
     uint32_t              size_ip, size_tcp, tot_len;
 #if (TC_PAYLOAD)
@@ -300,27 +308,26 @@ router_update(bool old, tc_iph_t *ip)
     }
 #endif 
 
+#if (TC_DNAT)
+    key = get_route_key(old, ip->daddr, tcp->dest, 0, tcp->source);
+#else
+    key = get_route_key(old, ip->daddr, tcp->dest, ip->saddr, tcp->source);
+#endif
+
+
 #if (TC_SINGLE)
     if (srv_settings.s_fd_num > 0) {
-        fd = srv_settings.s_router_fds[srv_settings.s_fd_index];
+        fd = choose_fd(key); 
         if (fd <= 0) {
             tc_log_info(LOG_WARN, 0, "fd is not valid");
             return;
         }
-        srv_settings.s_fd_index = (srv_settings.s_fd_index + 1) % 
-            srv_settings.s_fd_num;
     } else {
         tc_log_debug0(LOG_DEBUG, 0, "no valid fd for sending resp");
         return;
     }
 
 #else
-
-#if (TC_DNAT)
-    key = get_route_key(old, ip->daddr, tcp->dest, 0, tcp->source);
-#else
-    key = get_route_key(old, ip->daddr, tcp->dest, ip->saddr, tcp->source);
-#endif
 
     fd  = router_get(key);
     if (fd <= 0) {

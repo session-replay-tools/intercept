@@ -98,6 +98,10 @@ typedef struct tc_array_s       tc_array_t;
 #define MAX_FD_VALUE  (MAX_FD_NUM - 1)
 #define MAX_SINGLE_CONN_NUM 16
 
+#if (TC_SINGLE)
+#undef TC_MILLION_SUPPORT
+#endif
+
 #if (!TC_MILLION_SUPPORT)
 #define ROUTE_SLOTS 65536
 #define ROUTE_ARRAY_SIZE 15
