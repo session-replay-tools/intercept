@@ -51,20 +51,13 @@ if [ $TC_SINGLE = YES ]; then
     have=TC_SINGLE . auto/have
 fi
 
-if [ $TC_PCAP_CAPTURE = YES ]; then
-    TC_PCAP_NEEDED=YES
-    have=TC_PCAP . auto/have
-fi
-
-if [ $TC_PCAP_NEEDED = YES ]; then
-    CORE_LIBS="$CORE_LIBS -lpcap" 
-fi
-
 if [ $TC_MILLION_SUPPORT = YES ]; then
     have=TC_MILLION_SUPPORT . auto/have
 fi
 
 if [ $TC_ADVANCED = YES ]; then
+    TC_PCAP_CAPTURE=YES
+    TC_NFQUEUE=NO
     have=TC_ADVANCED . auto/have
 else
     if test $TC_MAJOR -gt 3; then
@@ -90,6 +83,16 @@ fi
 if [ $TC_COMBINED = YES ]; then
     have=TC_COMBINED . auto/have
 fi
+
+if [ $TC_PCAP_CAPTURE = YES ]; then
+    TC_PCAP_NEEDED=YES
+    have=TC_PCAP . auto/have
+fi
+
+if [ $TC_PCAP_NEEDED = YES ]; then
+    CORE_LIBS="$CORE_LIBS -lpcap" 
+fi
+
 
 . auto/cc/conf
 . auto/headers
