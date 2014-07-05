@@ -57,7 +57,6 @@ typedef tc_rbtree_key_int_t  tc_msec_int_t;
 typedef struct tm            tc_tm_t;
 
 struct tc_event_timer_s {
-    unsigned                   timedout:1;
     unsigned                   timer_set:1;
     void                      *data;
     tc_pool_t                 *pool;

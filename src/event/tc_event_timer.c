@@ -72,8 +72,6 @@ tc_event_expire_timers(void)
 
             ev->timer_set = 0;
 
-            ev->timedout = 1;
-
             ev->handler(ev);
 
             continue;

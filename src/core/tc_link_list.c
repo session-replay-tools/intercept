@@ -6,12 +6,7 @@ link_node_malloc(tc_pool_t *pool, void *data)
 {
     p_link_node p;
 
-    if (!pool->loop) {
-        p = (p_link_node) tc_pcalloc(pool, sizeof(link_node));
-    } else {
-        p = (p_link_node) tc_palloc_loop(pool, sizeof(link_node));
-        tc_memzero(p, sizeof(link_node));
-    }
+    p = (p_link_node) tc_pcalloc(pool, sizeof(link_node));
 
     if (p != NULL) {
         p->data = data;

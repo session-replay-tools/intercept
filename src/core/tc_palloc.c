@@ -32,31 +32,9 @@ tc_create_pool(size_t size, size_t pool_max)
 
         p->current = p;
         p->large = NULL;
-        p->loop = NULL;
-
     }
     
     return p;
-}
-
-
-void 
-create_pool_loop(tc_pool_t *p, size_t size)
-{
-    p->loop = tc_pcalloc(p, sizeof(tc_pool_loop_t));
-
-    if (p->loop) {
-        p->loop->start = tc_pcalloc(p, size);
-        if (p->loop->start) {
-            p->loop->end = p->loop->start + size;
-            p->loop->last = p->loop->start;
-            p->loop->last_freed = NULL;
-            p->loop->wrap_around = 0;
-        } else {
-            tc_pfree(p, p->loop);
-            p->loop = NULL;
-        }
-    }
 }
 
 
@@ -140,56 +118,6 @@ tc_pnalloc(tc_pool_t *pool, size_t size)
     }
 
     return tc_palloc_large(pool, size);
-}
-
-
-void *
-tc_palloc_loop(tc_pool_t *pool, size_t size)
-{
-    u_char         *m, *end;
-    tc_pool_loop_t *loop;
-
-    loop = pool->loop;
-
-    if (size <= pool->max && loop) {
-
-        if (!loop->wrap_around) {
-            end = loop->end;
-        } else {
-            end = loop->last_freed;
-            if (end == NULL) {
-                return tc_palloc(pool, size);
-            }
-        }
-
-        do {
-            m = tc_align_ptr(loop->last, TC_ALIGNMENT);
-
-            if (m > end) {
-                return tc_palloc(pool, size);
-            }
-
-            if ((size_t) (end - m) >= size) {
-                loop->last = m + size;
-                return m;
-            }
-
-            if (!loop->wrap_around) {
-                loop->wrap_around = 1;
-                loop->last = loop->start;
-                end = loop->last_freed;
-                if (end == NULL) {
-                    return tc_palloc(pool, size);
-                }
-            } else {
-                return tc_palloc(pool, size);
-            }
-
-        } while (true);
-
-    } else {
-        return tc_palloc(pool, size);
-    }
 }
 
 
@@ -308,32 +236,6 @@ tc_pfree(tc_pool_t *pool, void *p)
     }
 
     return TC_DECLINED;
-}
-
-
-tc_int_t
-tc_pool_loop_free(tc_pool_t *pool, void *p)
-{
-    if (pool->loop) {
-        if (pool->loop->start <= (u_char *) p && 
-                pool->loop->end > (u_char *) p) 
-        {
-            if (pool->loop->last_freed > (u_char *) p) {
-                pool->loop->wrap_around = 0;
-            }
-            pool->loop->last_freed = p;
-
-            return TC_OK;
-
-        } else {
-
-            return tc_pfree(pool, p);
-        }
-
-    } else {
-
-        return tc_pfree(pool, p);
-    }
 }
 
 
