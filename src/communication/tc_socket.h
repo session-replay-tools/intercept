@@ -32,18 +32,18 @@ int tc_pcap_socket_in_init(pcap_t **pd, char *device,
 #endif
 int tc_raw_socket_in_init(int type);
 
-int tc_raw_socket_out_init();
+int tc_raw_socket_out_init(void);
 int tc_raw_socket_snd(int fd, void *buf, size_t len, uint32_t ip);
 
 #if (TC_PCAP_SND)
 int tc_pcap_snd_init(char *if_name, int mtu);
 int tc_pcap_snd(unsigned char *frame, size_t len);
-int tc_pcap_over();
+int tc_pcap_over(void);
 #endif
 
 #if (!TC_ADVANCED)
 #if (!TC_NFQUEUE)
-int tc_nl_socket_init();
+int tc_nl_socket_init(void);
 int tc_nl_socket_rcv(int fd, char *buffer, size_t len);
 
 #else
@@ -53,7 +53,7 @@ int tc_nfq_socket_rcv(int fd, char *buffer, size_t len, int *rv);
 #endif
 #endif
 
-int tc_socket_init();
+int tc_socket_init(void);
 int tc_socket_set_nonblocking(int fd);
 int tc_socket_set_nodelay(int fd);
 int tc_socket_connect(int fd, uint32_t ip, uint16_t port);

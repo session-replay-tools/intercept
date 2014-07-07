@@ -24,7 +24,7 @@ copy_message(tc_pool_t *pool, struct msg_server_s *msg)
 }
 
 
-void
+static void
 tc_delay_del_obs(tc_event_timer_t *evt)
 {
     delay_sess_t *s;

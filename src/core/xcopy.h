@@ -232,7 +232,7 @@ typedef struct devices_s{
 #endif
 
 /* global functions */
-int daemonize();
+int daemonize(void);
 
 #define TC_OK      0
 #define TC_ERR    -1

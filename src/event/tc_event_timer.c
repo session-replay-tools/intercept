@@ -1,8 +1,8 @@
 #include <xcopy.h>
 
 
-tc_rbtree_t          tc_event_timer_rbtree;
-static tc_rbtree_node_t       tc_event_timer_sentinel;
+tc_rbtree_t              tc_event_timer_rbtree;
+static tc_rbtree_node_t  tc_event_timer_sentinel;
 
 /*
  * the event timer rbtree may contain the duplicate keys, however,
@@ -11,7 +11,7 @@ static tc_rbtree_node_t       tc_event_timer_sentinel;
  */
 
 tc_int_t
-tc_event_timer_init()
+tc_event_timer_init(void )
 {
     tc_rbtree_init(&tc_event_timer_rbtree, &tc_event_timer_sentinel,
                     tc_rbtree_insert_timer_value);

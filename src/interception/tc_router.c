@@ -359,7 +359,7 @@ router_update(bool old, tc_iph_t *ip)
 }
 
 
-void router_stat()
+void router_stat(void)
 {
     tc_log_info(LOG_NOTICE, 0, "cache hit:%llu,missed:%llu,lost:%llu", 
             table->hit, table->missed, table->lost);

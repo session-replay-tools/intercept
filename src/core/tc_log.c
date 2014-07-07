@@ -21,7 +21,7 @@ static tc_log_level_t tc_log_levels[] = {
 };
 
 
-int
+static int
 tc_vscnprintf(char *buf, size_t size, const char *fmt, va_list args)
 {
     int i;
@@ -39,7 +39,7 @@ tc_vscnprintf(char *buf, size_t size, const char *fmt, va_list args)
 }
 
 
-int
+static int
 tc_scnprintf(char *buf, size_t size, const char *fmt, ...)
 {
     int     i;
@@ -67,7 +67,7 @@ tc_log_init(const char *file)
 
 
 void
-tc_log_end()
+tc_log_end(void)
 {
     if (log_fd != -1) {
         close(log_fd);

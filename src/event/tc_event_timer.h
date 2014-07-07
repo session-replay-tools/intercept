@@ -10,7 +10,7 @@
 #define TC_TIMER_LAZY_DELAY  1
 
 
-tc_int_t tc_event_timer_init();
+tc_int_t tc_event_timer_init(void);
 tc_msec_t tc_event_find_timer(void);
 void tc_event_expire_timers(void);
 
@@ -33,7 +33,7 @@ tc_event_update_timer(tc_event_timer_t *ev, tc_msec_t timer)
     tc_msec_int_t     diff;
 
     if (ev != NULL) {
-        key = tc_current_time_msec + timer;
+        key = ((tc_msec_t) tc_current_time_msec) + timer;
 
         if (ev->timer_set) {
             diff = (tc_msec_int_t) (key - ev->timer.key);
@@ -54,7 +54,7 @@ tc_event_update_timer(tc_event_timer_t *ev, tc_msec_t timer)
     }
 }
 
-static inline tc_event_timer_t* 
+static tc_event_timer_t* 
 tc_event_add_timer(tc_pool_t *pool, tc_msec_t timer, void *data, 
         tc_event_timer_handler_pt handler)
 {
@@ -66,7 +66,7 @@ tc_event_add_timer(tc_pool_t *pool, tc_msec_t timer, void *data,
         ev->pool = pool;
         ev->handler = handler;
         ev->data = data;
-        key = tc_current_time_msec + timer;
+        key = ((tc_msec_t) tc_current_time_msec) + timer;
         ev->timer.key = key;
 
         tc_rbtree_insert(&tc_event_timer_rbtree, &ev->timer);

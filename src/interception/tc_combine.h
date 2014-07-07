@@ -2,8 +2,8 @@
 #define  TC_COMBINE_INCLUDED
 
 #if (TC_COMBINED)
-void buffer_and_send(int fd, msg_server_t *msg);
-void send_buffered_packets();
+void buffer_and_snd(int fd, msg_server_t *msg);
+void send_buffered_packets(void);
 #endif
 
 

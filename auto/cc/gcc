@@ -48,9 +48,9 @@ esac
 
 # optimizations
 
-#TC_GCC_OPT="-O2"
+TC_GCC_OPT="-O3"
 #TC_GCC_OPT="-Os"
-TC_GCC_OPT="-O"
+#TC_GCC_OPT="-O"
 
 #CFLAGS="$CFLAGS -fomit-frame-pointer"
 
@@ -126,18 +126,18 @@ CFLAGS="$CFLAGS $PIPE $CPU_OPT"
 # warnings
 
 # -W requires at least -O
-#CFLAGS="$CFLAGS ${TC_GCC_OPT:--O} -W"
+CFLAGS="$CFLAGS ${TC_GCC_OPT:--O}"
 
 #CFLAGS="$CFLAGS -Wall -Wpointer-arith"
 #CFLAGS="$CFLAGS -Wconversion"
-#CFLAGS="$CFLAGS -Winline"
-#CFLAGS="$CFLAGS -Wmissing-prototypes"
+CFLAGS="$CFLAGS -Winline"
+CFLAGS="$CFLAGS -Wmissing-prototypes"
 
 
 case "$TC_GCC_VER" in
     3.* | 4.* )
         # we have a lot of the unused function arguments
-        CFLAGS="$CFLAGS -Wno-unused-parameter -O3"
+        CFLAGS="$CFLAGS -Wno-unused-parameter"
         # 4.2.1 shows the warning in wrong places
         #CFLAGS="$CFLAGS -Wunreachable-code"
     ;;

@@ -182,7 +182,7 @@ tc_raw_socket_in_init(int type)
 
 
 int
-tc_raw_socket_out_init()
+tc_raw_socket_out_init(void)
 {
     int fd, n;
 
@@ -253,7 +253,7 @@ tc_pcap_snd(unsigned char *frame, size_t len)
 }
 
 
-int tc_pcap_over()
+int tc_pcap_over(void)
 {
     if (pcap != NULL) {
         pcap_close(pcap);
@@ -325,7 +325,7 @@ tc_raw_socket_snd(int fd, void *buf, size_t len, uint32_t ip)
 
 #if (!TC_NFQUEUE)
 int
-tc_nl_socket_init()
+tc_nl_socket_init(void)
 {
     int                  fd, rcvbuf;
     unsigned char        buf[128];

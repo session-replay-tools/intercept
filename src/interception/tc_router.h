@@ -36,7 +36,7 @@ int router_init(tc_pool_t *pool);
 
 void router_add(int, uint32_t, uint16_t, uint32_t, uint16_t, int);
 void router_update(bool, tc_iph_t *);
-void router_stat();
+void router_stat(void);
 void router_destroy(tc_pool_t *);
 
 #endif /* TC_ROUTER_INCLUDED */

@@ -15,8 +15,8 @@
 
 #define LOG_MAX_LEN        2048
 
-int tc_log_init();
-void tc_log_end();
+int tc_log_init(const char *);
+void tc_log_end(void);
 
 void tc_log_info(int level, int err, const char *fmt, ...);
 void tc_log_trace(int level, int err, tc_iph_t *ip, tc_tcph_t *tcp);

@@ -406,7 +406,7 @@ server_init(tc_event_loop_t *event_loop, char *ip, uint16_t port)
 
 /* clear resources for interception */
 void
-server_over()
+server_over(void)
 {
 #if (TC_NFQUEUE)   
 

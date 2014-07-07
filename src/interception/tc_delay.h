@@ -13,8 +13,8 @@ typedef struct delay_sess_s {
 
 void delay_table_init(tc_pool_t *pool, uint32_t size);
 void delay_table_add(uint64_t key, struct msg_server_s *);
-void delay_table_send(uint64_t key, int fd);
-void delay_table_destroy();
+void delay_table_snd(uint64_t key, int fd);
+void delay_table_destroy(void);
 
 #endif /* TC_DELAY_INCLUDED */
 

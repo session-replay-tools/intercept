@@ -9,14 +9,14 @@ volatile struct tm  tc_current_tm;
 static char cache_err_log_time[TC_ERR_LOG_TIME_STR_LEN];
 
 void 
-tc_time_init()
+tc_time_init(void)
 {
     tc_time_update();
 }
 
 
 void
-tc_time_update()
+tc_time_update(void)
 {
     int             status;
     long            msec;

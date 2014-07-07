@@ -80,7 +80,7 @@ bool  tc_intercept_check_tunnel_for_single(int fd)
 #endif
 
 void 
-release_tunnel_resources()
+release_tunnel_resources(void)
 {
     int i;
 

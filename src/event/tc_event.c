@@ -227,7 +227,7 @@ void tc_event_destroy(tc_event_t *ev, int delayed)
 }
 
 
-void finally_release_obsolete_events()
+void finally_release_obsolete_events(void)
 {
     int i;
 
