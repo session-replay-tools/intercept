@@ -46,12 +46,8 @@ int tc_nfq_socket_rcv(int fd, char *buffer, size_t len, int *rv);
 int tc_socket_init(void);
 int tc_socket_set_nonblocking(int fd);
 int tc_socket_set_nodelay(int fd);
-int tc_socket_connect(int fd, uint32_t ip, uint16_t port);
 int tc_socket_listen(int fd, const char *bind_ip, uint16_t port);
 int tc_socket_rcv(int fd, char *buffer, ssize_t len);
-#if (TC_COMBINED)
-int tc_socket_cmb_rcv(int fd, int *num, char *buffer);
-#endif
 int tc_socket_snd(int fd, char *buffer, int len);
 
 #endif /* TC_SOCKET_INCLUDED */

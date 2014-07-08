@@ -30,26 +30,3 @@ link_list_create(tc_pool_t *pool)
     return l;
 }
 
-
-int
-link_list_clear(tc_pool_t *pool, link_list *l)
-{
-    int         count = 0;
-    p_link_node p, next;
-
-    p = l->head.next;
-    while (p != &(l->head)) {
-        next = p->next;
-        count++;
-        tc_pfree(pool, p);
-        p = next;
-    }   
-
-    l->head.next = &(l->head);
-    l->head.prev = &(l->head);
-    l->size = 0;
-
-    return count;
-
-}
-
