@@ -28,9 +28,6 @@ struct tc_pool_s {
 };
 
 
-void *tc_alloc(size_t size);
-void *tc_calloc(size_t size);
-
 tc_pool_t *tc_create_pool(size_t size, size_t pool_max);
 void tc_destroy_pool(tc_pool_t *pool);
 

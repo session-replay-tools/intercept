@@ -21,21 +21,6 @@ tc_alloc(size_t size)
 }
 
 
-void *
-tc_calloc(size_t size)
-{
-    void  *p;
-
-    p = tc_alloc(size);
-
-    if (p) {
-        tc_memzero(p, size);
-    }
-
-    return p;
-}
-
-
 #if (TC_HAVE_POSIX_MEMALIGN)
 
 void *

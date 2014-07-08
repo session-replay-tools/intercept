@@ -3,7 +3,6 @@
 
 #if (TC_ADVANCED)
 
-#if (HAVE_PCAP_CREATE)
 static int
 tc_pcap_open(pcap_t **pd, char *device, int snap_len, int buf_size)
 {
@@ -61,28 +60,6 @@ tc_pcap_open(pcap_t **pd, char *device, int snap_len, int buf_size)
 
     return TC_OK;
 }
-
-
-#else
-static int 
-tc_pcap_open(pcap_t **pd, char *device, int snap_len, int buf_size)
-{
-    char   ebuf[PCAP_ERRBUF_SIZE]; 
-
-    *ebuf = '\0';
-
-    *pd = pcap_open_live(device, snap_len, 0, 10, ebuf);
-    if (*pd == NULL) {
-        tc_log_info(LOG_ERR, 0, "pcap_open_live error:%s", ebuf);
-        return TC_ERR;
-
-    } else if (*ebuf) {
-        tc_log_info(LOG_WARN, 0, "pcap_open_live warn:%s", ebuf);
-    }
-
-    return TC_OK;
-}
-#endif
 
 
 int
@@ -396,34 +373,6 @@ tc_socket_set_nodelay(int fd)
 
 
 int
-tc_socket_connect(int fd, uint32_t ip, uint16_t port)
-{
-    socklen_t           len;
-    struct sockaddr_in  remote_addr;                           
-
-    tc_memzero(&remote_addr, sizeof(remote_addr));               
-
-    remote_addr.sin_family = AF_INET;                         
-    remote_addr.sin_addr.s_addr = ip;                
-    remote_addr.sin_port = htons(port);                       
-
-    len = (socklen_t) (sizeof(remote_addr));
-
-    if (connect(fd, (struct sockaddr *) &remote_addr, len) == -1) {
-        tc_log_info(LOG_ERR, errno, "Can not connect to remote server(%s:%d)",
-                inet_ntoa(remote_addr.sin_addr), port);
-        tc_socket_close(fd);
-        return TC_ERR;
-    } else {
-        tc_log_info(LOG_INFO, 0, "connect to remote server(%s:%d)",
-                inet_ntoa(remote_addr.sin_addr), port);
-        return TC_OK;
-    }
-
-}
-
-
-int
 tc_socket_listen(int fd, const char *bind_ip, uint16_t port)
 {
     int                opt, ret;
@@ -504,68 +453,6 @@ tc_socket_rcv(int fd, char *buffer, ssize_t len)
 
     return TC_OK;
 }
-
-#if (TC_COMBINED)
-int
-tc_socket_cmb_rcv(int fd, int *num, char *buffer)
-{
-    int     read_num = 0, cnt = 0;
-    size_t  last;
-    ssize_t n, len;
-
-    last = 0;
-    len = sizeof(uint16_t);
-
-    for ( ;; ) {
-        n = recv(fd, buffer + last, len, 0);
-
-        if (n >= 0) {
-
-            if (n == 0) {
-                tc_log_info(LOG_NOTICE, 0, "recv length 0,fd:%d", fd);
-                return TC_ERR;
-            }
-
-            last += n;
-
-            if ((!read_num) && last >= sizeof(uint16_t)) {
-                *num = (int) ntohs(*(uint16_t *) buffer);
-                if (*num > COMB_MAX_NUM) {
-                    tc_log_info(LOG_WARN, 0, "num:%d > threshold", *num);
-                    return TC_ERR;
-                }
-                read_num = 1;
-                len = ((*num) * MSG_SERVER_SIZE) + len;
-            }
-
-            if ((len -= n) == 0) {
-                break;
-            }
-
-            if (len < 0) {
-                tc_log_info(LOG_WARN, 0, "read:%d,num packs:%d, remain:%d",
-                        n, *num, len);
-                break;
-            }
-
-        } else {
-            if (errno == EAGAIN || errno == EINTR) {
-                cnt++;
-                if (cnt % MAX_READ_LOG_TRIES == 0) {
-                    tc_log_info(LOG_NOTICE, 0, "recv tries:%d,fd:%d", cnt, fd);
-                }
-                continue;
-            } else {
-                tc_log_info(LOG_NOTICE, errno, "return -1,fd:%d", fd);
-                return TC_ERR;
-            }
-        }
-
-    }
-
-    return TC_OK;
-}
-#endif
 
 
 int

@@ -19,8 +19,6 @@ typedef struct link_list_s{
 
 p_link_node link_node_malloc(tc_pool_t *pool, void *data);
 link_list *link_list_create(tc_pool_t *pool);
-int link_list_clear(tc_pool_t *pool, link_list *l);
-
 
 static inline void 
 link_list_append(link_list *l, p_link_node p)

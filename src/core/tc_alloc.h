@@ -6,7 +6,6 @@
 
 
 void *tc_alloc(size_t size);
-void *tc_calloc(size_t size);
 
 #define tc_free          free
 

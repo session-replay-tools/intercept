@@ -434,10 +434,6 @@ output_for_debug()
 #if (TC_MILLION_SUPPORT)
     tc_log_info(LOG_NOTICE, 0, "TC_MILLION_SUPPORT mode");
 #endif
-#if (HAVE_PCAP_CREATE)
-    tc_log_info(LOG_NOTICE, 0, "HAVE_PCAP_CREATE is true,new pcap");
-#endif
-
 
 }
 
