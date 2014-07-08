@@ -93,87 +93,6 @@ retrieve_ip_addr()
 
     return 1;
 }
-
-#else
-
-static void
-parse_target(ip_port_pair_t *pair, char *addr)
-{
-    char    *seq, *ip_s, *port_s;
-    uint16_t tmp_port;
-
-    if ((seq = strchr(addr, ':')) == NULL) {
-        pair->ip = 0;
-        port_s = addr;
-    } else {
-        ip_s = addr;
-        port_s = seq + 1;
-
-        *seq = '\0';
-        pair->ip = inet_addr(ip_s);
-        *seq = ':';
-    }
-
-    tmp_port = atoi(port_s);
-    pair->port = htons(tmp_port);
-}
-
-
-/*
- * retrieve target addresses
- * format
- * 192.168.0.1:80,192.168.0.1:8080
- */
-static int
-retr_target_addrs(char *raw_tf, ip_port_pairs_t *tf)
-{
-    int   i;
-    char *p, *seq;
-
-    if (raw_tf == NULL) {
-        tc_log_info(LOG_ERR, 0, "it must have -o argument");
-        fprintf(stderr, "no -o argument\n");
-        return -1;
-    }
-
-    for (tf->num = 1, p = raw_tf; *p; p++) {
-        if (*p == ',') {
-            tf->num++;
-        }
-    }
-
-    tf->map = tc_palloc(srv_settings.pool, tf->num *
-                                sizeof(ip_port_pair_t *));
-    if (tf->map == NULL) {
-        return -1;
-    }
-    tc_memzero(tf->map, tf->num * sizeof(ip_port_pair_t *));
-
-    for (i = 0; i < tf->num; i++) {
-        tf->map[i] = tc_palloc(srv_settings.pool, sizeof(ip_port_pair_t));
-        if (tf->map[i] == NULL) {
-            return -1;
-        }
-        tc_memzero(tf->map[i], sizeof(ip_port_pair_t));
-    }
-
-    p = raw_tf;
-    i = 0;
-    for ( ;; ) {
-        if ((seq = strchr(p, ',')) == NULL) {
-            parse_target(tf->map[i++], p);
-            break;
-        } else {
-            *seq = '\0';
-            parse_target(tf->map[i++], p);
-            *seq = ',';
-
-            p = seq + 1;
-        }
-    }
-
-    return 0;
-}
 #endif
 
 #if (TC_COMBINED)
@@ -195,6 +114,11 @@ usage(void)
     printf("-x <passlist,> passed IP list through firewall\n"
            "               Format:\n"
            "               ip_addr1, ip_addr2 ...\n");
+#else
+    printf("-i <device,>   The name of the interface to listen on.  This is usually a driver\n"
+           "               name followed by a unit number,for example eth0 for the first\n"
+           "               Ethernet interface.\n");
+    printf("-F <filter>    user filter(same as pcap filter)\n");
 #endif
 #if (TC_COMBINED)
     printf("-n <num>       set the maximal num of combined packets.\n");
@@ -207,15 +131,6 @@ usage(void)
 #if (TC_NFQUEUE) 
     printf("-q <num>       set the maximal length of the nfnetlink queue if the kernel\n"
            "               supports it.\n");
-#endif
-#if (TC_ADVANCED)
-#if (TC_PCAP)
-    printf("-i <device,>   The name of the interface to listen on.  This is usually a driver\n"
-           "               name followed by a unit number,for example eth0 for the first\n"
-           "               Ethernet interface.\n");
-    printf("-F <filter>    user filter(same as pcap filter)\n");
-#endif
-    printf("-o <target>    set the target for capturing response packets.\n");
 #endif
 #if (TC_SINGLE)
     printf("-c             set connections protected\n");
@@ -234,6 +149,9 @@ read_args(int argc, char **argv) {
     while (-1 != (c = getopt(argc, argv,
 #if (!TC_ADVANCED)
          "x:" /* ip list passed through ip firewall */
+#else
+         "i:" /* <device,> */
+         "F:" /* <filter> */
 #endif
 #if (TC_COMBINED)
          "n:"
@@ -244,13 +162,6 @@ read_args(int argc, char **argv) {
          "b:" /* binded ip address */
 #if (TC_NFQUEUE) 
          "q:" /* max queue length for nfqueue */
-#endif
-#if (TC_ADVANCED)
-#if (TC_PCAP)
-         "i:" /* <device,> */
-         "F:" /* <filter> */
-#endif
-         "o:" /* target addresses */
 #endif
          "h"  /* print this help and exit */
          "l:" /* error log file path */
@@ -267,6 +178,13 @@ read_args(int argc, char **argv) {
             case 'x':
                 srv_settings.raw_ip_list = optarg;
                 break;
+#else
+            case 'i':
+                srv_settings.raw_device = optarg;
+                break;
+            case 'F':
+                srv_settings.user_filter = optarg;
+                break;
 #endif
 #if (TC_COMBINED)
             case 'n':
@@ -279,19 +197,6 @@ read_args(int argc, char **argv) {
 #if (TC_NFQUEUE) 
             case 'q':
                 srv_settings.max_queue_len = atoi(optarg);
-                break;
-#endif
-#if (TC_ADVANCED)
-#if (TC_PCAP)
-            case 'i':
-                srv_settings.raw_device = optarg;
-                break;
-            case 'F':
-                srv_settings.user_filter = optarg;
-                break;
-#endif
-            case 'o':
-                srv_settings.raw_tf = optarg;
                 break;
 #endif
             case 's':
@@ -364,7 +269,7 @@ read_args(int argc, char **argv) {
 }
 
 
-#if (TC_ADVANCED && TC_PCAP)
+#if (TC_ADVANCED)
 static void 
 extract_filter()
 {
@@ -422,7 +327,7 @@ static int
 set_details()
 {
     int  n;
-#if (TC_ADVANCED && TC_PCAP)
+#if (TC_ADVANCED)
     int  len;
 #endif
 
@@ -436,22 +341,7 @@ set_details()
         tc_log_info(LOG_NOTICE, 0, "-x para:%s", srv_settings.raw_ip_list);
         retrieve_ip_addr();
     }
-#endif
-    
-#if (TC_ADVANCED)
-    if (srv_settings.raw_tf != NULL) {
-        tc_log_info(LOG_NOTICE, 0, "-o parameter:%s", srv_settings.raw_tf);
-        retr_target_addrs(srv_settings.raw_tf, &(srv_settings.targets));
-    } else {
-#if (!TC_PCAP)
-        tc_log_info(LOG_WARN, 0, "no raw targets for advanced mode");
-        return -1;
-#else
-        tc_log_info(LOG_NOTICE, 0, "no raw targets for advanced mode");
-#endif
-    }
-
-#if (TC_PCAP)
+#else 
     if (srv_settings.raw_device != NULL) {
         tc_log_info(LOG_NOTICE, 0, "device:%s", srv_settings.raw_device);
         if (strcmp(srv_settings.raw_device, DEFAULT_DEVICE) == 0) {
@@ -472,8 +362,6 @@ set_details()
     } else {
         extract_filter();
     }
-#endif
-
 #endif
 
 #if (TC_NFQUEUE)

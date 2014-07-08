@@ -42,7 +42,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <getopt.h>
-#if (TC_PCAP || TC_PCAP_SND)
+#if (TC_ADVANCED)
 #include <pcap.h>
 #endif
 
@@ -212,14 +212,14 @@ struct ethernet_hdr {
 #else
 #define CAPTURE_REP_MAX_SIZE CAPTURE_REP_HEADER_MAX_LEN
 #endif
-#if (TC_PCAP)
+#if (TC_ADVANCED)
 #define REP_RCV_BUF_SIZE (ETHERNET_HDR_LEN + CAPTURE_REP_MAX_SIZE)
 #else
 #define REP_RCV_BUF_SIZE (CAPTURE_REP_MAX_SIZE)
 #endif
 
 
-#if (TC_PCAP)
+#if (TC_ADVANCED)
 typedef struct device_s{
     char    name[MAX_DEVICE_NAME_LEN];
     pcap_t *pcap;
@@ -261,7 +261,6 @@ int daemonize(void);
 #include <tc_alloc.h>
 #include <tc_palloc.h>
 #include <tc_event.h>
-#include <tc_array.h>
 #include <tc_select_module.h>
 #include <tc_event_timer.h>
 

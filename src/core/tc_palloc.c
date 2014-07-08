@@ -91,36 +91,6 @@ tc_palloc(tc_pool_t *pool, size_t size)
 }
 
 
-void *
-tc_pnalloc(tc_pool_t *pool, size_t size)
-{
-    u_char     *m;
-    tc_pool_t  *p;
-
-    if (size <= pool->max) {
-
-        p = pool->current;
-
-        do {
-            m = p->d.last;
-
-            if ((size_t) (p->d.end - m) >= size) {
-                p->d.last = m + size;
-
-                return m;
-            }
-
-            p = p->d.next;
-
-        } while (p);
-
-        return tc_palloc_block(pool, size);
-    }
-
-    return tc_palloc_large(pool, size);
-}
-
-
 static void *
 tc_palloc_block(tc_pool_t *pool, size_t size)
 {
@@ -181,30 +151,6 @@ tc_palloc_large(tc_pool_t *pool, size_t size)
                 break;
             }
         }
-
-        large = tc_palloc(pool, sizeof(tc_pool_large_t));
-        if (large == NULL) {
-            tc_free(p);
-            return NULL;
-        }
-
-        large->alloc = p;
-        large->next = pool->large;
-        pool->large = large;
-    }
-
-    return p;
-}
-
-
-void *
-tc_pmemalign(tc_pool_t *pool, size_t size, size_t alignment)
-{
-    void              *p;
-    tc_pool_large_t  *large;
-
-    p = tc_memalign(alignment, size);
-    if (p != NULL) {
 
         large = tc_palloc(pool, sizeof(tc_pool_large_t));
         if (large == NULL) {

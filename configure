@@ -86,7 +86,6 @@ fi
 
 if [ $TC_PCAP_CAPTURE = YES ]; then
     TC_PCAP_NEEDED=YES
-    have=TC_PCAP . auto/have
 fi
 
 if [ $TC_PCAP_NEEDED = YES ]; then

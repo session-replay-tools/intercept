@@ -68,12 +68,9 @@ typedef struct xcopy_srv_settings {
     uint16_t             port;           /* TCP port number to listen on */
 
 #if (TC_ADVANCED)
-#if (TC_PCAP)
     char                *raw_device;
     char                *user_filter;
-#endif
     ip_port_pairs_t      targets;
-    char                *raw_tf;
 #endif
 
     uint64_t             sock_w_cnt;
@@ -88,7 +85,7 @@ typedef struct xcopy_srv_settings {
     char                *log_path;       /* error log path */
 
     tunnel_basic_t       tunnel[MAX_FD_NUM];
-#if (TC_ADVANCED && TC_PCAP)
+#if (TC_ADVANCED)
     devices_t            devices;
     char                 filter[MAX_FILTER_LENGH];
 #endif

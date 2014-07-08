@@ -1,13 +1,12 @@
 #include <xcopy.h>
 #include <intercept.h>
 
+#if (TC_ADVANCED)
 
 static uint64_t     tot_copy_resp_packs = 0; 
 static uint64_t     tot_resp_packs = 0; 
 static uint64_t     tot_router_items = 0; 
-#if (TC_PCAP)
 static  pcap_t     *pcap_map[MAX_FD_NUM];
-#endif
 
 static int tc_msg_event_proc(tc_event_t *rev);
 
@@ -178,15 +177,12 @@ resp_dispose(tc_iph_t *ip)
             tcp = (tc_tcph_t *) ((char *) ip + size_ip);
             size_tcp   = tcp->doff << 2;
             if (size_tcp >= TCPH_MIN_LEN) {
-#if (TC_PCAP)
                 if (srv_settings.user_filter != NULL) {
                     passed = 1;
                 } else {
                     passed = 0;
                 }
-#else
-                passed = 0;
-#endif
+
                 ip_addr = ip->saddr;
                 port    = tcp->source;
 
@@ -221,7 +217,6 @@ resp_dispose(tc_iph_t *ip)
 }
 
 
-#if (TC_PCAP)
 static void 
 pcap_pack_callback(unsigned char *args, const struct pcap_pkthdr *pkt_hdr,
         unsigned char *frame)
@@ -238,48 +233,21 @@ pcap_pack_callback(unsigned char *args, const struct pcap_pkthdr *pkt_hdr,
         tc_log_info(LOG_ERR, 0, "recv len is less than:%d", ETHERNET_HDR_LEN);
     }
 }
-#endif
+
 
 static int
 tc_proc_resp_packet(tc_event_t *rev)
 {
-#if (TC_PCAP)
     pcap_t        *pcap;
-#else
-    char           recv_buf[REP_RCV_BUF_SIZE];
-    tc_iph_t      *ip;
-    register int   recv_len;
-#endif
 
-#if (TC_PCAP)
     pcap = pcap_map[rev->fd];
     pcap_dispatch(pcap, 10, (pcap_handler) pcap_pack_callback, 
             (u_char *) pcap);
-#else
-    recv_len = recvfrom(rev->fd, recv_buf, REP_RCV_BUF_SIZE, 0, NULL, NULL);
-    if (recv_len != -1) {
-        if ((size_t) recv_len >=  TCP_IP_PACK_MIN_LEN) {
-            ip = (tc_iph_t *) (char *) (recv_buf);
-            resp_dispose(ip);
-        } else {
-            tc_log_info(LOG_ERR, 0, "recv len is too small:%d", recv_len);
-            return TC_ERR;
-        }
-    } else {
-        if (errno == EAGAIN) {
-            return TC_OK;
-        }
 
-        tc_log_info(LOG_ERR, errno, "recvfrom");
-        return TC_ERR;
-    }
-    
-#endif
     return TC_OK;
 }
 
 
-#if (TC_PCAP)
 static int 
 tc_device_set(tc_event_loop_t *event_loop, device_t *device) 
 {
@@ -306,25 +274,17 @@ tc_device_set(tc_event_loop_t *event_loop, device_t *device)
 
     return TC_OK;
 }
-#endif
+
 
 static int
 sniff_init(tc_event_loop_t *event_loop)
 {
-#if (TC_PCAP)
     int         i;
     bool        work;
     char        ebuf[PCAP_ERRBUF_SIZE];
     devices_t  *devices;
     pcap_if_t  *alldevs, *d;
-#else
-   
-    int fd;
-    tc_event_t *ev;
-#endif
 
-
-#if (TC_PCAP)
     devices = &(srv_settings.devices);
     if (srv_settings.raw_device == NULL) {
         if (pcap_findalldevs(&alldevs, ebuf) == -1) {
@@ -368,24 +328,6 @@ sniff_init(tc_event_loop_t *event_loop)
         tc_log_info(LOG_ERR, 0, "no device available for snooping packets");
         return TC_ERR;
     }
-#else
-    if ((fd = tc_raw_socket_in_init(COPY_FROM_LINK_LAYER)) 
-            == TC_INVALID_SOCK) 
-    {
-        return TC_ERR;
-    }
-    tc_socket_set_nonblocking(fd);
-
-    ev = tc_event_create(event_loop->pool, fd, tc_proc_resp_packet, NULL);
-    if (ev == NULL) {
-        return TC_ERR;
-    }
-
-    if (tc_event_add(event_loop, ev, TC_EVENT_READ) == TC_EVENT_ERROR) {
-        tc_log_info(LOG_ERR, 0, "add socket(%d) to event loop failed.", fd);
-        return TC_ERR;
-    }
-#endif
 
     return TC_OK;
 
@@ -435,21 +377,18 @@ server_init(tc_event_loop_t *event_loop, char *ip, uint16_t port)
 void
 server_over()
 {
-#if (TC_PCAP)
     int i;
-#endif
 
     router_destroy(srv_settings.pool);
     delay_table_destroy();
 
-#if (TC_PCAP)
     for (i = 0; i < MAX_FD_NUM; i++) {
         if (pcap_map[i] != NULL) {
             pcap_close(pcap_map[i]);
             pcap_map[i] = NULL;
         }
     }
-#endif
-
 }
+
+#endif
 

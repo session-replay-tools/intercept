@@ -35,9 +35,7 @@ tc_pool_t *tc_create_pool(size_t size, size_t pool_max);
 void tc_destroy_pool(tc_pool_t *pool);
 
 void *tc_palloc(tc_pool_t *pool, size_t size);
-void *tc_pnalloc(tc_pool_t *pool, size_t size);
 void *tc_pcalloc(tc_pool_t *pool, size_t size);
-void *tc_pmemalign(tc_pool_t *pool, size_t size, size_t alignment);
 tc_int_t tc_pfree(tc_pool_t *pool, void *p);
 
 

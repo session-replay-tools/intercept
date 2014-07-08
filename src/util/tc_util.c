@@ -1,7 +1,7 @@
 
 #include <xcopy.h>
 
-#if (TC_PCAP)
+#if (TC_ADVANCED)
 int
 retrieve_devices(char *raw_device, devices_t *devices)
 {

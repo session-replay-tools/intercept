@@ -26,19 +26,9 @@
 #define tc_socket_close(fd) close(fd)
 #define tc_socket_accept(fd) accept(fd, NULL, NULL) 
 
-#if (TC_PCAP)
+#if (TC_ADVANCED)
 int tc_pcap_socket_in_init(pcap_t **pd, char *device, 
         int snap_len, int buf_size, char *pcap_filter);
-#endif
-int tc_raw_socket_in_init(int type);
-
-int tc_raw_socket_out_init(void);
-int tc_raw_socket_snd(int fd, void *buf, size_t len, uint32_t ip);
-
-#if (TC_PCAP_SND)
-int tc_pcap_snd_init(char *if_name, int mtu);
-int tc_pcap_snd(unsigned char *frame, size_t len);
-int tc_pcap_over(void);
 #endif
 
 #if (!TC_ADVANCED)
