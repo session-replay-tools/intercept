@@ -47,7 +47,6 @@ void
 delay_table_init(tc_pool_t *pool, uint32_t size)
 {
     table = hash_create(pool, size);
-    hash_set_timeout(table, 30);
     msg_item_cnt       = 0;
     msg_item_free_cnt  = 0;
     msg_ls_cnt         = 0;

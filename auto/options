@@ -116,6 +116,6 @@ TC_PID_PATH=${TC_PID_PATH:-logs/intercept.pid}
 if [ ".$TC_ERROR_LOG_PATH" = ".stderr" ]; then
     TC_ERROR_LOG_PATH=
 else
-    TC_ERROR_LOG_PATH=${TC_ERROR_LOG_PATH:-logs/error.log}
+    TC_ERROR_LOG_PATH=${TC_ERROR_LOG_PATH:-logs/error_intercept.log}
 fi
 

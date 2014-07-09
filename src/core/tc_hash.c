@@ -10,7 +10,6 @@ hash_node_malloc(tc_pool_t *pool, uint64_t key, void *data)
         hn->key  = key;
         hn->data = data;
         hn->access_time = tc_time();
-        hn->visit_cnt   = 0;
     } else {
         tc_log_info(LOG_ERR, errno, "can't malloc memory for hash node");
     }
@@ -27,15 +26,11 @@ hash_find_node(hash_table *table, uint64_t key)
     link_list   *l  = get_link_list(table, key);
     p_link_node  ln  = link_list_first(l);
 
-    table->total_visit++;
-
     while (ln) {
 
         hn = (hash_node *) ln->data;
-        table->total_key_compared++;
         if (hn->key == key) {
             hn->access_time = tc_time();
-            hn->visit_cnt++;
             if (!first) {
                 /* put the lastest item to the head of the linked list */
                 link_list_remove(l, ln);
@@ -65,7 +60,6 @@ hash_create(tc_pool_t *pool, uint32_t size)
             for (i = 0; i < size; i++) {
                 ht->lists[i] = link_list_create(pool);
             }
-            ht->timeout = DEFAULT_TIMEOUT;
         } else {
             tc_log_info(LOG_ERR, errno, "can't calloc memory for hash lists");
             ht = NULL;
@@ -142,9 +136,4 @@ hash_del(hash_table *table, tc_pool_t *pool, uint64_t key)
     }
 }
 
-void
-hash_set_timeout(hash_table *table, int t)
-{
-    table->timeout = t;
-}
 

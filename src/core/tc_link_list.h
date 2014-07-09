@@ -73,17 +73,6 @@ link_list_first(link_list *l)
 }
 
 
-static inline p_link_node 
-link_list_tail(link_list *l)
-{
-    if (l == NULL || l->head.next == &(l->head)) {
-        return NULL;
-    }
-
-    return l->head.prev;
-}
-
-
 static inline p_link_node
 link_list_pop_first(link_list *l)
 {
@@ -94,19 +83,6 @@ link_list_pop_first(link_list *l)
     }
 
     return link_list_remove(l, first);
-}
-
-
-static inline p_link_node
-link_list_pop_tail(link_list *l)
-{
-    p_link_node tail = link_list_tail(l);
-
-    if (!tail) {
-        return tail;
-    }
-
-    return link_list_remove(l, tail);
 }
 
 

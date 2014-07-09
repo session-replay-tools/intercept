@@ -15,7 +15,6 @@ typedef struct route_item_s {
 
 typedef struct route_slot_s {
     uint32_t     num:6;
-    uint32_t     total_visit:26;
     route_item_t items[ROUTE_ARRAY_SIZE];
 }route_slot_t;
 
