@@ -38,6 +38,15 @@ case ".$TC_PID_PATH" in
     ;;
 esac
 
+case ".$TC_ERROR_LOG_PATH" in
+    ./* | .)
+    ;;  
+
+    *)  
+        TC_ERROR_LOG_PATH=$TC_PREFIX/$TC_ERROR_LOG_PATH
+    ;;  
+esac
+
 cat << END                                                    >> $TC_MAKEFILE
 
 install:	$TC_OBJS${tc_dirsep}intercept

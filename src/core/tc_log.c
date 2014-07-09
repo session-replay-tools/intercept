@@ -55,8 +55,27 @@ tc_scnprintf(char *buf, size_t size, const char *fmt, ...)
 int
 tc_log_init(const char *file)
 {
-    log_fd = open((file == NULL ? "error.log" : file),
-                  O_RDWR|O_CREAT|O_APPEND, 0644);
+    int  len;
+    char default_file_path[256], *p;
+
+    if (file == NULL) {
+        len = strlen(TC_PREFIX);
+        if (len >= 256) {
+            fprintf(stderr, "file prefix too long: %s\n", TC_PREFIX);
+            return -1;
+        }
+        strncpy(default_file_path, TC_PREFIX, len);
+        p = default_file_path + len;
+        len += strlen(TC_ERROR_LOG_PATH);
+        if (len >= 256) {
+            fprintf(stderr, "file path too long: %s\n", TC_PREFIX);
+            return -1;
+        }
+        strcpy(p, TC_ERROR_LOG_PATH);
+        file = default_file_path;
+    }
+
+    log_fd = open(file, O_RDWR|O_CREAT|O_APPEND, 0644);
 
     if (log_fd == -1) {
         fprintf(stderr, "Open log file error: %s\n", strerror(errno));

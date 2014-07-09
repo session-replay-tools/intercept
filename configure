@@ -121,6 +121,7 @@ fi
 have=TC_SBIN_PATH value="\"$TC_SBIN_PATH\"" . auto/define
 have=TC_CONF_PATH value="\"$TC_CONF_PATH\"" . auto/define
 have=TC_PID_PATH value="\"$TC_PID_PATH\"" . auto/define
+have=TC_ERROR_LOG_PATH value="\"$TC_ERROR_LOG_PATH\"" . auto/define
 
 if [ $TC_PAYLOAD = YES ]; then
     have=TC_PAYLOAD . auto/have

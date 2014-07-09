@@ -6,6 +6,7 @@ help=no
 
 TC_PREFIX=
 TC_SBIN_PATH=
+TC_ERROR_LOG_PATH=
 TC_CONF_PREFIX=
 TC_CONF_PATH=
 TC_PID_PATH=
@@ -45,6 +46,7 @@ do
         --prefix=*)                      TC_PREFIX="$value"        ;;
         --sbin-path=*)                   TC_SBIN_PATH="$value"     ;;
         --conf-path=*)                   TC_CONF_PATH="$value"     ;;
+        --error-log-path=*)              TC_ERROR_LOG_PATH="$value";;
         --pid-path=*)                    TC_PID_PATH="$value"      ;;
         --builddir=*)                    TC_OBJS="$value"          ;;
         --with-cc=*)                     CC="$value"               ;;
@@ -111,4 +113,9 @@ fi
 
 TC_CONF_PREFIX=`dirname $TC_CONF_PATH`
 TC_PID_PATH=${TC_PID_PATH:-logs/intercept.pid}
+if [ ".$TC_ERROR_LOG_PATH" = ".stderr" ]; then
+    TC_ERROR_LOG_PATH=
+else
+    TC_ERROR_LOG_PATH=${TC_ERROR_LOG_PATH:-logs/error.log}
+fi
 

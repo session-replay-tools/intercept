@@ -17,3 +17,8 @@ cat << END
   intercept pid file: "$TC_PID_PATH"
 END
 
+if test -n "$TC_ERROR_LOG_PATH"; then
+  echo "  intercept error log file: \"$TC_ERROR_LOG_PATH\""
+else
+  echo "  intercept logs errors to stderr"
+fi
