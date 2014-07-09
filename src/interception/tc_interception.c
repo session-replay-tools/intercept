@@ -84,9 +84,8 @@ tc_msg_event_proc(tc_event_t *rev)
 
         tunnel[fd].first_in = 0;
         if (msg.clt_ip != 0 || msg.clt_port != 0) {
-            tunnel[fd].clt_msg_size = MSG_CLT_MIN_SIZE;
             tc_log_info(LOG_WARN, 0, "client too old for intercept");
-            srv_settings.old = 1;
+            return TC_ERR;
         } else {
             if (version != INTERNAL_VERSION) {
                 tc_log_info(LOG_WARN, 0, 
@@ -123,7 +122,7 @@ tc_msg_event_proc(tc_event_t *rev)
             tot_router_items++;
             tc_log_debug1(LOG_DEBUG, 0, "add client router:%u",
                           ntohs(msg.clt_port));
-            router_add(srv_settings.old, msg.clt_ip, msg.clt_port, 
+            router_add(msg.clt_ip, msg.clt_port, 
                     msg.target_ip, msg.target_port, fd);
 #endif
             break;
@@ -203,7 +202,7 @@ static int tc_nfq_proc_packet(struct nfq_q_handle *qh,
             } else {
 
                 tot_copy_resp_packs++;
-                router_update(srv_settings.old, ip);
+                router_update(ip);
 
                 /* drop the packet */
                 ret = nfq_set_verdict(qh, id, NF_DROP, 0, NULL);
@@ -315,7 +314,7 @@ tc_nl_event_proc(tc_event_t *rev)
         } else {
 
             tot_copy_resp_packs++;
-            router_update(srv_settings.old, ip);
+            router_update(ip);
             /* drop the packet */
             dispose_netlink_packet(rev->fd, NF_DROP, packet_id);
         }

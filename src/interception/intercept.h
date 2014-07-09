@@ -1,24 +1,12 @@
 #ifndef TC_INCLUDED
 #define TC_INCLUDED
 
+#if (!TC_ADVANCED)
 typedef struct passed_ip_addr_s {
     /* It allows 32 ip addresses passed through server firewall */
     uint32_t    ips[MAX_ALLOWED_IP_NUM];
     int         num;
 } passed_ip_addr_t;
-
-#if (TC_ADVANCED)
-typedef struct ip_port_pair_t {
-    uint32_t ip;
-    uint16_t port;
-}ip_port_pair_t;
-
-
-typedef struct ip_port_pairs_t {
-    ip_port_pair_t **map;
-    int              num;
-}ip_port_pairs_t;
-
 #endif
 
 #if (TC_COMBINED)
@@ -48,35 +36,31 @@ typedef struct xcopy_srv_settings {
     struct nfq_q_handle *nfq_q_handler;  /* NFQUEUE queue handler */
     int                  max_queue_len;
 #endif
-
     uint32_t             hash_size;      /* hash size for kinds of table */
     int                  max_fd;
-#if (!TC_ADVANCED)
-    passed_ip_addr_t     passed_ips;     /* passed ip list */
-#endif
+
 #if (TC_SINGLE)
-    time_t               accepted_tunnel_time;
     int                  s_fd_num;
     int                  s_router_fds[MAX_FD_NUM];
-    bool                 conn_protected;
+    unsigned int         conn_protected:1;
 #endif
-    bool                 old;            /* old client flag */
     unsigned int         do_daemonize:1; /* daemon flag */
 #if (TC_COMBINED)
     unsigned int         cur_combined_num:5;
 #endif
-    uint16_t             port;           /* TCP port number to listen on */
+    unsigned int         port:16;        /* TCP port number to listen on */
 
 #if (TC_ADVANCED)
     char                *raw_device;
     char                *user_filter;
-    ip_port_pairs_t      targets;
 #endif
 
+#if (TC_SINGLE)
+    time_t               accepted_tunnel_time;
+#endif
     uint64_t             sock_w_cnt;
     tc_pool_t           *pool;
     tc_pool_t           *cpool;
-
 #if (!TC_ADVANCED)
     char                *raw_ip_list;    /* raw ip list */
 #endif
@@ -88,6 +72,8 @@ typedef struct xcopy_srv_settings {
 #if (TC_ADVANCED)
     devices_t            devices;
     char                 filter[MAX_FILTER_LENGH];
+#else
+    passed_ip_addr_t     passed_ips;     /* passed ip list */
 #endif
 }xcopy_srv_settings;
 

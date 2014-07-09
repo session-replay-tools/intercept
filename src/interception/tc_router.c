@@ -21,33 +21,26 @@ router_init(tc_pool_t *pool)
 
 #if (TC_MILLION_SUPPORT)
 static uint64_t
-get_route_key(bool old, uint32_t clt_ip, uint16_t clt_port, 
+get_route_key(uint32_t clt_ip, uint16_t clt_port, 
         uint32_t target_ip, uint16_t target_port)
 {
     uint64_t value = clt_ip;
     uint64_t l_clt_port = clt_port;
 
-    value = (value << 16) + (l_clt_port << 48);
-
-    if (!old) {
-        value = value + target_ip + target_port;
-    }
+    value = (value << 16) + (l_clt_port << 48) + target_ip + target_port;
 
     return value;
 }
 #else
 static uint32_t
-get_route_key(bool old, uint32_t clt_ip, uint16_t clt_port, 
+get_route_key(uint32_t clt_ip, uint16_t clt_port, 
         uint32_t target_ip, uint16_t target_port)
 {
     uint32_t value  = clt_port;
     uint32_t l_target_port = target_port;
 
-    value = (value << 16) + clt_ip + clt_port;
-    if (!old) {
-        value = value + target_ip + (l_target_port << 24) + 
-            (l_target_port << 8) + target_port;
-    }
+    value = (value << 16) + clt_ip + clt_port + target_ip + 
+        (l_target_port << 24) + (l_target_port << 8) + target_port;
 
     return value;
 }
@@ -118,7 +111,7 @@ static void router_add_adjust(route_slot_t *slot, int key, int fd)
 
 /* add item to the router table */
 void
-router_add(int old, uint32_t clt_ip, uint16_t clt_port, uint32_t target_ip, 
+router_add(uint32_t clt_ip, uint16_t clt_port, uint32_t target_ip, 
         uint16_t target_port, int fd)
 {
     int           i, max, existed, index;
@@ -133,9 +126,9 @@ router_add(int old, uint32_t clt_ip, uint16_t clt_port, uint32_t target_ip,
     table->total_sessions++;
 
 #if (TC_DNAT)
-    key = get_route_key(old, clt_ip, clt_port, 0, target_port);
+    key = get_route_key(clt_ip, clt_port, 0, target_port);
 #else
-    key = get_route_key(old, clt_ip, clt_port, target_ip, target_port);
+    key = get_route_key(clt_ip, clt_port, target_ip, target_port);
 #endif
 
 #if (TC_MILLION_SUPPORT)
@@ -267,7 +260,7 @@ choose_fd(uint32_t key)
 #endif
 
 void
-router_update(bool old, tc_iph_t *ip)
+router_update(tc_iph_t *ip)
 {
     int                   fd;
 #if (TC_MILLION_SUPPORT)
@@ -309,9 +302,9 @@ router_update(bool old, tc_iph_t *ip)
 #endif 
 
 #if (TC_DNAT)
-    key = get_route_key(old, ip->daddr, tcp->dest, 0, tcp->source);
+    key = get_route_key(ip->daddr, tcp->dest, 0, tcp->source);
 #else
-    key = get_route_key(old, ip->daddr, tcp->dest, ip->saddr, tcp->source);
+    key = get_route_key(ip->daddr, tcp->dest, ip->saddr, tcp->source);
 #endif
 
 

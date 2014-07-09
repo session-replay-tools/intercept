@@ -269,60 +269,6 @@ read_args(int argc, char **argv) {
 }
 
 
-#if (TC_ADVANCED)
-static void 
-extract_filter()
-{
-    int              i, cnt = 0;
-    char            *pt;
-    ip_port_pair_t  *pair, **map;
-
-    map = srv_settings.targets.map;
-
-    pt = srv_settings.filter;
-#if (TC_UDP)
-    strcpy(pt, "udp and (");
-#else
-    strcpy(pt, "tcp and (");
-#endif
-    pt = pt + strlen(pt);
- 
-    for (i = 0; i < srv_settings.targets.num; i++) {
-
-        pair = map[i];
-
-        if (pair->port == 0 && pair->ip == 0) {
-            continue;
-        }
-
-        if (cnt >= MAX_FILTER_ITEMS) {
-            break;
-        }
-
-        cnt++; 
-
-        if (i > 0) {
-            strcpy(pt, " or ");
-        }
-        pt = pt + strlen(pt);
-
-        pt = construct_filter(SRC_DIRECTION, pair->ip, pair->port, pt);
-    }
-
-    strcpy(pt, ")");
-
-    if (cnt == 0) {
-        tc_log_info(LOG_WARN, 0, "filter is not set");
-    }
-
-    tc_log_info(LOG_NOTICE, 0, "intercept filter = %s", srv_settings.filter);
-
-    return;
-
-}
-#endif
-
-
 static int  
 set_details()
 {
@@ -360,7 +306,9 @@ set_details()
         }
         memcpy(srv_settings.filter, srv_settings.user_filter, len);
     } else {
-        extract_filter();
+        fprintf(stderr, "please set filter (-F param) for capturing packets\n");
+        tc_log_info(LOG_ERR, 0, "not set filter (-F param)");
+        return -1;
     }
 #endif
 

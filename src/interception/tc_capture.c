@@ -83,9 +83,8 @@ tc_msg_event_proc(tc_event_t *rev)
 
             version = ntohs(msg.type);
             if (msg.clt_ip != 0 || msg.clt_port != 0) {
-                tunnel[fd].clt_msg_size = MSG_CLT_MIN_SIZE;
-                srv_settings.old = 1;
-                tc_log_info(LOG_WARN, 0, "client too old for intercept");
+                tc_log_info(LOG_ERR, 0, "client too old for intercept");
+                return TC_ERR;
             } else {
                 if (version != INTERNAL_VERSION) {
                     tc_log_info(LOG_WARN, 0, 
@@ -119,7 +118,7 @@ tc_msg_event_proc(tc_event_t *rev)
             tot_router_items++;
             tc_log_debug1(LOG_DEBUG, 0, "add client router:%u",
                     ntohs(msg.clt_port));
-            router_add(srv_settings.old, msg.clt_ip, msg.clt_port, 
+            router_add(msg.clt_ip, msg.clt_port, 
                     msg.target_ip,  msg.target_port, rev->fd);
 #endif
             break;
@@ -161,11 +160,8 @@ server_push(tc_event_timer_t *evt)
 static void 
 resp_dispose(tc_iph_t *ip)
 {
-    uint16_t           port, size_ip, size_tcp, tot_len;
-    uint32_t           ip_addr;
+    uint16_t           size_ip, size_tcp, tot_len;
     tc_tcph_t         *tcp;
-    register int       i, passed;
-    ip_port_pair_t    *pair;
 
     if (ip->protocol == IPPROTO_TCP) {
         tot_resp_packs++;
@@ -178,33 +174,9 @@ resp_dispose(tc_iph_t *ip)
             size_tcp   = tcp->doff << 2;
             if (size_tcp >= TCPH_MIN_LEN) {
                 if (srv_settings.user_filter != NULL) {
-                    passed = 1;
-                } else {
-                    passed = 0;
-                }
-
-                ip_addr = ip->saddr;
-                port    = tcp->source;
-
-                if (!passed) {
-                    /* filter the packets we do care about */
-                    for (i = 0; i < srv_settings.targets.num; i++) {
-                        pair = srv_settings.targets.map[i];
-                        if (ip_addr == pair->ip && port == pair->port) {
-                            passed = 1;
-                            break;
-                        } else if (0 == pair->ip && port == pair->port) {
-                            passed = 1;
-                            break;
-                        }
-                    }
-                }
-
-                if (passed) {
                     tot_copy_resp_packs++;
-                    router_update(srv_settings.old, ip);
+                    router_update(ip);
                 }
-
             } else {
                 tc_log_info(LOG_WARN, 0, "Invalid TCP len: %d,tot_len:%d",
                         size_tcp, tot_len);
