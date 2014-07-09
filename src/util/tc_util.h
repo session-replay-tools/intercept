@@ -18,7 +18,6 @@
 
 #if (TC_ADVANCED)
 int retrieve_devices(char *raw_device, devices_t *devices);
-char *construct_filter(int flag, uint32_t ip, uint16_t port, char *filter);
 int get_l2_len(const unsigned char *, const int, const int);
 unsigned char *get_ip_data(pcap_t *, unsigned char *, const int , int *);
 #endif
