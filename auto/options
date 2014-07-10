@@ -91,7 +91,7 @@ cat << END
   --with-cc-opt=OPTIONS              set additional C compiler options
   --with-ld-opt=OPTIONS              set additional linker options
   --with-debug                       enable debug logging
-  --with-resp-playload               return payload of the response packet
+  --with-resp-payload                return payload of the response packet
 
   --traditional                      run intercept at traditional mode
   --single                           run intercept at non-distributed mode
