@@ -83,8 +83,6 @@ tc_event_t *tc_event_create(tc_pool_t *pool, int fd, tc_event_handler_pt reader,
         tc_event_handler_pt writer);
 void tc_event_destroy(tc_event_t *ev, int delayed);
 
-int tc_event_timer_add(tc_event_loop_t *loop, long timer,
-        tc_event_timer_handler_pt handler);
 void finally_release_obsolete_events(void);
 
 extern tc_atomic_t  tc_over;

@@ -399,13 +399,15 @@ tc_socket_listen(int fd, const char *bind_ip, uint16_t port)
     len = (socklen_t) sizeof(local_addr);
 
     if (bind(fd, (struct sockaddr *) &local_addr, len) == -1) {
-        tc_log_info(LOG_ERR, errno, "Bind socket(%d) to port:%d failed",
+        tc_log_info(LOG_ERR, errno, "Bind socket(%d) to port:%u failed",
                     fd, port);
+        fprintf(stderr, "Bind socket(%d) to port:%u failed\n", fd, port);
         return TC_ERR;
     }
 
     if (listen(fd, 5) == -1) {
         tc_log_info(LOG_ERR, errno, "Listen socket(%d) failed", fd);
+        fprintf(stderr, "Listen socket(%d) failed\n", fd);
         return TC_ERR;
     }
 
