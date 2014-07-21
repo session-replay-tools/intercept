@@ -36,6 +36,8 @@ esac
 
 CFLAGS="$CFLAGS $CPU_OPT"
 
+CFLAGS="$CFLAGS -std=gnu99 -D_FILE_OFFSET_BITS=64"
+
 # warnings
 
 CFLAGS="$CFLAGS -w2"
@@ -98,8 +100,7 @@ case "$TC_ICC_VER" in
     ;;
 esac
 
-# stop on warning
-CFLAGS="$CFLAGS -Werror"
+CFLAGS="$CFLAGS -W -Wall -Wunused-function -pedantic"
 
 # debug
 CFLAGS="$CFLAGS -g"

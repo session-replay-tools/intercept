@@ -54,8 +54,9 @@ esac
 
 CC_AUX_FLAGS="$CC_AUX_FLAGS $CPU_OPT"
 
-
 CFLAGS="$CFLAGS -pipe $CPU_OPT"
+
+CFLAGS="$CFLAGS -std=gnu99 -D_FILE_OFFSET_BITS=64"
 
 # warnings
 
@@ -65,8 +66,7 @@ CFLAGS="$CFLAGS $TC_CLANG_OPT -Wall -Wextra -Wpointer-arith"
 # we have a lot of unused function arguments
 CFLAGS="$CFLAGS -Wno-unused-parameter"
 
-# stop on warning
-#CFLAGS="$CFLAGS -Werror"
+CFLAGS="$CFLAGS -W -Wall -Wunused-function -pedantic"
 
 # debug
 CFLAGS="$CFLAGS -g"

@@ -4,6 +4,31 @@
 tc_rbtree_t              tc_event_timer_rbtree;
 static tc_rbtree_node_t  tc_event_timer_sentinel;
 
+
+tc_event_timer_t* 
+tc_event_add_timer(tc_pool_t *pool, tc_msec_t timer, void *data, 
+        tc_event_timer_handler_pt handler)
+{
+    tc_msec_t         key;
+    tc_event_timer_t *ev;
+
+    ev = (tc_event_timer_t *) tc_palloc(pool, sizeof(tc_event_timer_t));
+    if (ev != NULL) {
+        ev->pool = pool;
+        ev->handler = handler;
+        ev->data = data;
+        key = ((tc_msec_t) tc_current_time_msec) + timer;
+        ev->timer.key = key;
+
+        tc_rbtree_insert(&tc_event_timer_rbtree, &ev->timer);
+
+        tc_log_debug1(LOG_DEBUG, 0, "add timer:%llu", ev);
+        ev->timer_set = 1;
+    }
+    return ev;
+}
+
+
 /*
  * the event timer rbtree may contain the duplicate keys, however,
  * it should not be a problem, because we use the rbtree to find

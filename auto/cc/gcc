@@ -122,6 +122,8 @@ esac
 
 CFLAGS="$CFLAGS $PIPE $CPU_OPT"
 
+CFLAGS="$CFLAGS -std=gnu99 -D_FILE_OFFSET_BITS=64"
+
 
 # warnings
 
@@ -149,8 +151,7 @@ case "$TC_GCC_VER" in
 esac
 
 
-# stop on warning
-CFLAGS="$CFLAGS -Werror"
+CFLAGS="$CFLAGS -W -Wall -Wunused-function -pedantic"
 
 # debug
 CFLAGS="$CFLAGS -g"
