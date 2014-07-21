@@ -277,8 +277,6 @@ set_details()
     int  len;
 #endif
 
-    tc_pagesize = getpagesize();
-    tc_cacheline_size = TC_CPU_CACHE_LINE; 
     for (n = tc_pagesize; n >>= 1; tc_pagesize_shift++) { /* void */ }
 
 #if (!TC_ADVANCED)
@@ -349,7 +347,8 @@ settings_init(void)
 #if (TC_NFQUEUE)
     srv_settings.max_queue_len = -1;
 #endif
-
+    tc_pagesize = getpagesize();
+    tc_cacheline_size = TC_CPU_CACHE_LINE; 
 }
 
 
