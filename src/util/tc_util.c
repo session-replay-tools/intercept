@@ -40,7 +40,7 @@ retrieve_devices(char *raw_device, devices_t *devices)
 
 
 int
-get_l2_len(const unsigned char *frame, const int pkt_len, const int datalink)
+get_l2_len(const unsigned char *frame, const int datalink)
 {
     struct ethernet_hdr *eth_hdr;
 
@@ -85,7 +85,7 @@ get_ip_data(pcap_t *pcap, unsigned char *frame, const int pkt_len, int *pl2_len)
     int      l2_len;
     u_char  *ptr;
 
-    l2_len   = get_l2_len(frame, pkt_len, pcap_datalink(pcap));
+    l2_len   = get_l2_len(frame, pcap_datalink(pcap));
     *pl2_len = l2_len;
 
     if (pkt_len <= l2_len) {
