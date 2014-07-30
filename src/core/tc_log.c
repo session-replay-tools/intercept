@@ -147,7 +147,7 @@ tc_log_info(int level, int err, const char *fmt, ...)
 void
 tc_log_trace(int level, int err, tc_iph_t *ip, tc_tcph_t *tcp)
 {
-    char           *tmp_buf, src_ip[1024], dst_ip[1024];
+    char           *tmp_buf, src_ip[64], dst_ip[64];
     uint32_t        pack_size;
     unsigned int    seq, ack_seq;
     struct in_addr  src_addr, dst_addr;

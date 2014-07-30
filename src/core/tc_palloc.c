@@ -94,8 +94,8 @@ tc_palloc(tc_pool_t *pool, size_t size)
 static void *
 tc_palloc_block(tc_pool_t *pool, size_t size)
 {
-    u_char      *m;
-    size_t       psize;
+    u_char     *m;
+    size_t      psize;
     tc_pool_t  *p, *new, *current;
 
     psize = (size_t) (pool->d.end - (u_char *) pool);
@@ -132,7 +132,7 @@ tc_palloc_block(tc_pool_t *pool, size_t size)
 static void *
 tc_palloc_large(tc_pool_t *pool, size_t size)
 {
-    void              *p;
+    void             *p;
     tc_uint_t         n;
     tc_pool_large_t  *large;
 
