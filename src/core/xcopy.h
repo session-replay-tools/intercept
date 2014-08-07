@@ -48,12 +48,7 @@
 
 #define VERSION "1.0.0"  
 
-#define INTERNAL_EVOLUTION_VERSION 5 
-#if (TC_ADVANCED)
-#define INTERNAL_VERSION (32768 + INTERNAL_EVOLUTION_VERSION)
-#else
-#define INTERNAL_VERSION INTERNAL_EVOLUTION_VERSION
-#endif
+#define INTERNAL_VERSION 6
 
 typedef struct tc_pool_s        tc_pool_t;
 typedef struct tc_buf_s         tc_buf_t;
