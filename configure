@@ -78,6 +78,7 @@ fi
 
 if [ $TC_NFQUEUE = YES ]; then
     have=TC_NFQUEUE . auto/have
+    CORE_LIBS="$CORE_LIBS -lnfnetlink -lnetfilter_queue" 
 fi
 
 if [ $TC_COMBINED = YES ]; then

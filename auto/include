@@ -56,6 +56,8 @@ else
     echo "----------"    >> $TC_AUTOCONF_ERR
     echo $tc_test       >> $TC_AUTOCONF_ERR
     echo "----------"    >> $TC_AUTOCONF_ERR
+
+    exit 1
 fi
 
 rm $TC_AUTOTEST*
