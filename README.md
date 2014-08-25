@@ -1,7 +1,7 @@
 # An auxiliary tool for tcpcopy and tcpburn 
 
 ##Release History
-+ 2014.09  v1.0    TCPBurn released
++ 2014.09  v1.0    intercept released
 
 
 ##Bugs and feature requests
