@@ -24,6 +24,7 @@ TC_PAYLOAD=NO
 TC_DNAT=NO
 TC_DEBUG=NO
 TC_PCAP_NEEDED=NO
+TC_PF_RING_DIR=NONE
 
 TC_CC_OPT=
 TC_LD_OPT=
@@ -61,6 +62,7 @@ do
         --nfqueue)                       TC_NFQUEUE=YES            ;;
         --disable-combined)              TC_COMBINED=NO            ;;
         --with-resp-payload)             TC_PAYLOAD=YES            ;;
+        --with-pfring=*)                 TC_PF_RING_DIR="$value"   ;;
         --with-debug)                    TC_DEBUG=YES              ;;
 
         *)
@@ -90,8 +92,9 @@ cat << END
   --with-cpp=PATH                    set C preprocessor pathname
   --with-cc-opt=OPTIONS              set additional C compiler options
   --with-ld-opt=OPTIONS              set additional linker options
-  --with-debug                       enable debug logging
   --with-resp-payload                return payload of the response packet
+  --with-pfring=PATH                 set path to PF_RING library sources
+  --with-debug                       enable debug logging
 
   --traditional                      run intercept at traditional mode
   --single                           run intercept at non-distributed mode
@@ -111,7 +114,6 @@ END
 fi
 
 
-TC_CONF_PREFIX=`dirname $TC_CONF_PATH`
 TC_PID_PATH=${TC_PID_PATH:-logs/intercept.pid}
 if [ ".$TC_ERROR_LOG_PATH" = ".stderr" ]; then
     TC_ERROR_LOG_PATH=
