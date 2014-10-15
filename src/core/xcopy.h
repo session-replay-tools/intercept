@@ -26,7 +26,6 @@
 #include <fcntl.h>
 #include <sys/syscall.h>
 #include <sys/resource.h>
-#include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -256,8 +255,15 @@ int daemonize(void);
 #include <tc_alloc.h>
 #include <tc_palloc.h>
 #include <tc_event.h>
-#include <tc_select_module.h>
 #include <tc_event_timer.h>
+
+#ifdef TC_HAVE_EPOLL
+#include <sys/epoll.h>
+#include <tc_epoll_module.h>
+#else
+#include <sys/select.h>
+#include <tc_select_module.h>
+#endif
 
 #endif /* XCOPY_H_INCLUDED */
 

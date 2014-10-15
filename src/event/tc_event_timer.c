@@ -87,7 +87,7 @@ tc_event_expire_timers(void)
         /* node->key <= tc_current_time */
 
         if ((tc_msec_int_t) (node->key - tc_current_time_msec) <= 0) {
-            ev = (tc_event_timer_t *) ((char *) node - 
+            ev = (tc_event_timer_t *) ((char *) node -
                     offsetof(tc_event_timer_t, timer));
 
 #if (TC_DEBUG)
@@ -106,3 +106,4 @@ tc_event_expire_timers(void)
     }
 
 }
+
