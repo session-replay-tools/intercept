@@ -378,6 +378,9 @@ output_for_debug()
 #if (TC_DNAT)
     tc_log_info(LOG_NOTICE, 0, "TC_DNAT mode");
 #endif
+#if (TC_HAVE_EPOLL)
+    tc_log_info(LOG_NOTICE, 0, "epoll mode");
+#endif
 #if (TC_MILLION_SUPPORT)
     tc_log_info(LOG_NOTICE, 0, "TC_MILLION_SUPPORT mode");
 #endif
