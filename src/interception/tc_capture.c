@@ -239,6 +239,7 @@ tc_device_set(tc_event_loop_t *event_loop, device_t *device)
         return TC_ERR;
     }
 
+    ev->low_prior = 1;
     if (tc_event_add(event_loop, ev, TC_EVENT_READ) == TC_EVENT_ERROR) {
         tc_log_info(LOG_ERR, 0, "add socket(%d) to event loop failed.", fd);
         return TC_ERR;

@@ -187,7 +187,7 @@ int tc_epoll_del_event(tc_event_loop_t *loop, tc_event_t *ev, int delevents)
 
 int tc_epoll_polling(tc_event_loop_t *loop, long to)
 {
-    int                         i, ret;
+    int                         i, ret, read_cnt;
     long                        timeout;
     tc_event_t                **evs;
     struct epoll_event         *events;
@@ -212,20 +212,60 @@ int tc_epoll_polling(tc_event_loop_t *loop, long to)
         return TC_EVENT_AGAIN;
     }
 
+    read_cnt = 0;
     for (i = 0; i < ret; i++) {
         int mask = 0;
         struct epoll_event *e = events + i;
         int fd = e->data.fd;
-        /* clear the active events, and reset */
-        evs[fd]->events = TC_EVENT_NONE;
+        if (!evs[fd]->low_prior) {
+            /* clear the active events, and reset */
+            evs[fd]->events = TC_EVENT_NONE;
 
-        if (e->events & EPOLLIN) mask |= TC_EVENT_READ;
-        if (e->events & EPOLLOUT) mask |= TC_EVENT_WRITE;
-        if (e->events & EPOLLERR) mask |= TC_EVENT_WRITE;
-        if (e->events & EPOLLHUP) mask |= TC_EVENT_WRITE;
+            if (e->events & EPOLLIN) {
+                mask |= TC_EVENT_READ;
+            }
 
-        evs[fd]->events |= mask;
-        tc_event_push_active_event(loop->active_events, evs[fd]);
+            if ((e->events & EPOLLOUT) || (e->events & EPOLLERR) || 
+                    (e->events & EPOLLHUP)) 
+            {
+                mask |= TC_EVENT_WRITE;
+            }
+
+            evs[fd]->events |= mask;
+            tc_event_push_active_event(loop->active_events, evs[fd]);
+
+            read_cnt++;
+        }
+    }
+
+    if (read_cnt < ret) {
+        for (i = 0; i < ret; i++) {
+            int mask = 0;
+            struct epoll_event *e = events + i;
+            int fd = e->data.fd;
+            if (evs[fd]->low_prior) {
+                /* clear the active events, and reset */
+                evs[fd]->events = TC_EVENT_NONE;
+
+                if (e->events & EPOLLIN) {
+                    mask |= TC_EVENT_READ;
+                }
+
+                if ((e->events & EPOLLOUT) || (e->events & EPOLLERR) || 
+                        (e->events & EPOLLHUP)) 
+                {
+                    mask |= TC_EVENT_WRITE;
+                }
+
+                evs[fd]->events |= mask;
+                tc_event_push_active_event(loop->active_events, evs[fd]);
+
+                 read_cnt++;
+                 if (read_cnt == ret) {
+                     break;
+                 }
+            }
+        }
     }
 
     return TC_EVENT_OK;

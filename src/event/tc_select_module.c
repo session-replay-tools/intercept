@@ -27,6 +27,7 @@ int tc_select_create(tc_event_loop_t *loop)
     return TC_EVENT_OK;
 }
 
+
 int tc_select_destroy(tc_event_loop_t *loop)
 {
     int                       i;
@@ -51,6 +52,7 @@ int tc_select_destroy(tc_event_loop_t *loop)
 
     return TC_EVENT_OK;
 }
+
 
 int tc_select_add_event(tc_event_loop_t *loop, tc_event_t *ev, int events)
 {
@@ -85,6 +87,7 @@ int tc_select_add_event(tc_event_loop_t *loop, tc_event_t *ev, int events)
     return TC_EVENT_OK;
 }
 
+
 int tc_select_del_event(tc_event_loop_t *loop, tc_event_t *ev, int events)
 {
     tc_event_t               *last_ev;
@@ -118,6 +121,7 @@ int tc_select_del_event(tc_event_loop_t *loop, tc_event_t *ev, int events)
 
     return TC_EVENT_OK;
 }
+
 
 int tc_select_polling(tc_event_loop_t *loop, long to)
 {

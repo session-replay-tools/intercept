@@ -20,6 +20,7 @@ TC_ADVANCED=YES
 TC_NFQUEUE=NO
 TC_COMBINED=YES
 TC_SINGLE=NO
+TC_EPOLL=YES
 TC_PAYLOAD=NO
 TC_DNAT=NO
 TC_DEBUG=NO
@@ -60,6 +61,7 @@ do
         --dnat)                          TC_DNAT=YES               ;;
         --traditional)                   TC_ADVANCED=NO            ;;
         --nfqueue)                       TC_NFQUEUE=YES            ;;
+        --select)                        TC_EPOLL=NO               ;;
         --disable-combined)              TC_COMBINED=NO            ;;
         --with-resp-payload)             TC_PAYLOAD=YES            ;;
         --with-pfring=*)                 TC_PF_RING_DIR="$value"   ;;
@@ -100,6 +102,7 @@ cat << END
   --single                           run intercept at non-distributed mode
   --pcap-capture                     capture packets at the data link 
   --million                          support comet
+  --select                           use select module
   --dnat                             support dnat
   --nfqueue                          run intercept at nfqueue mode (ip queue will be used
                                      by default and this option is only valid if the
