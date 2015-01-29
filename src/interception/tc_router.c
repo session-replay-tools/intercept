@@ -268,9 +268,9 @@ router_update(tc_iph_t *ip)
 #else
     uint32_t              key;
 #endif
-    uint32_t              size_ip, size_tcp, tot_len;
+    uint32_t              size_ip, size_tcp;
 #if (TC_PAYLOAD)
-    uint32_t              cont_len;
+    uint32_t              cont_len, tot_len;
     unsigned char        *payload, *p;
 #endif
     tc_tcph_t            *tcp;
@@ -279,7 +279,6 @@ router_update(tc_iph_t *ip)
     size_ip = ip->ihl << 2;
     tcp = (tc_tcph_t *) ((char *) ip + size_ip);
     size_tcp = tcp->doff << 2;
-    tot_len  = ntohs(ip->tot_len);
 
     tc_memzero(&msg, sizeof(struct msg_server_s));
     memcpy((void *) &(msg.ip), ip, sizeof(tc_iph_t));
@@ -291,6 +290,7 @@ router_update(tc_iph_t *ip)
     }
 
 #if (TC_PAYLOAD)
+    tot_len  = ntohs(ip->tot_len);
     cont_len = tot_len - size_ip - size_tcp;
     if (cont_len > 0) {
         payload = (unsigned char *) ((char *) tcp + size_tcp);

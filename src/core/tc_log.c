@@ -140,7 +140,7 @@ tc_log_info(int level, int err, const char *fmt, ...)
 
     *p++ = '\n';
 
-    (void) write(log_fd, buffer, p - buffer);
+    write(log_fd, buffer, p - buffer);
 }
 
 
