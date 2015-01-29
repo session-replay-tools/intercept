@@ -370,6 +370,7 @@ output_for_debug()
     tc_log_info(LOG_NOTICE, 0, "TC_COMBINED mode");
 #endif
 #if (TC_ADVANCED)
+    tc_log_info(LOG_NOTICE, 0, "pcap version:%s", pcap_lib_version());
     tc_log_info(LOG_NOTICE, 0, "TC_ADVANCED mode");
 #endif
 #if (TC_PAYLOAD)
