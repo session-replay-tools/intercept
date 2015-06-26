@@ -5,7 +5,7 @@
 
 ##Note
 1. It is tested on Linux only (kernal 2.6 or above)
-2. Root privilege is required
+2. Root privilege or the CAP_NET_RAW capability is required
 3. It only supports pcap 1.0.0 or higher
 
 ##Bugs and feature requests
