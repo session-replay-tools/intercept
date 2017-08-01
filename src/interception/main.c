@@ -49,6 +49,55 @@ static signal_t signals[] = {
 };
 
 
+static int
+retrieve_docker_addrs()
+{
+    char         tmp[32];
+    size_t       len;
+    uint32_t     address;
+    const char  *split, *p;
+
+    p = srv_settings.dockered_ips;
+
+    if (strchr(p, '-') == NULL) {
+        tc_log_info(LOG_WARN, 0, "dockered ips \"%s\" is invalid", p);
+        fprintf(stderr, "dockered ips \"%s\" is invalid\n", p);
+        return -1;
+    }
+
+    tc_memzero(tmp, 32);
+
+    split = strchr(p, '-');
+    len = (size_t) (split - p);
+
+    if (len >= 32) {
+        tc_log_info(LOG_WARN, 0, "dockered ips \"%s\" is invalid", p);
+        return -1;
+    }
+
+    strncpy(tmp, p, len);
+    address = inet_addr(tmp);
+    srv_settings.docker_target_dst_ip = address;
+
+    p = split + 1;
+
+    len = strlen(p);
+    if (len >= 32) {
+        tc_log_info(LOG_WARN, 0, "dockered ips \"%s\" is invalid",
+                srv_settings.dockered_ips);
+        return -1;
+    }
+
+    tc_memzero(tmp, 32);
+
+    strncpy(tmp, p, len);
+    address = inet_addr(tmp);
+    srv_settings.docker_target_orig_ip = address;
+
+    return 0;
+}
+
+
 #if (!TC_ADVANCED)
 /* retrieve ip addresses */
 static int
@@ -125,6 +174,8 @@ usage(void)
 #endif
     printf("-p <num>       set the TCP port number to listen on. The default number is 36524.\n"
            "-s <num>       set the hash table size for intercept. The default value is 65536.\n"
+           "-D <transfer>  use <transfer> to specify the dockered_ip and orig_ip\n"
+           "               which are segmented by '-'.\n"
            "-l <file>      save log information in <file>\n");
     printf("-P <file>      save PID in <file>, only used with -d option\n"
            "-b <ip_addr>   interface to listen on (default: INADDR_ANY, all addresses)\n");
@@ -160,6 +211,7 @@ read_args(int argc, char **argv) {
          "t:" /* router item timeout */
          "s:" /* hash table size for intercept */
          "b:" /* binded ip address */
+         "D:" 
 #if (TC_NFQUEUE) 
          "q:" /* max queue length for nfqueue */
 #endif
@@ -204,6 +256,9 @@ read_args(int argc, char **argv) {
                 break;
             case 'b':
                 srv_settings.bound_ip = optarg;
+                break;
+            case 'D':
+                srv_settings.dockered_ips = optarg;
                 break;
 #if (TC_SINGLE)
             case 'c':
@@ -316,6 +371,11 @@ set_details()
     }
 #endif
 
+    if (srv_settings.dockered_ips != NULL) {
+        tc_log_info(LOG_NOTICE, 0, "-D para:%s", srv_settings.dockered_ips);
+        retrieve_docker_addrs();
+    }
+
     /* daemonize */
     if (srv_settings.do_daemonize) {
         if (sigignore(SIGHUP) == -1) {
@@ -338,6 +398,7 @@ settings_init(void)
     srv_settings.port = SERVER_PORT;
     srv_settings.hash_size = 65536;
     srv_settings.bound_ip = NULL;
+    srv_settings.dockered_ips = NULL;
 #if (TC_COMBINED)
     srv_settings.cur_combined_num = COMB_MAX_NUM;
 #endif

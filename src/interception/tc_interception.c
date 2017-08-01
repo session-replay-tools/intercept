@@ -201,6 +201,12 @@ static int tc_nfq_proc_packet(struct nfq_q_handle *qh,
                 ret = nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
             } else {
 
+                if (srv_settings.dockered_ips != NULL) {
+                    if (ip->daddr == srv_settings.docker_target_dst_ip) {
+                        ip->daddr = srv_settings.docker_target_orig_ip;
+                    }
+                }
+
                 tot_copy_resp_packs++;
                 router_update(ip);
 
@@ -312,6 +318,12 @@ tc_nl_event_proc(tc_event_t *rev)
             dispose_netlink_packet(rev->fd, NF_ACCEPT, packet_id);
             
         } else {
+
+            if (srv_settings.dockered_ips != NULL) {
+                if (ip->daddr == srv_settings.docker_target_dst_ip) {
+                    ip->daddr = srv_settings.docker_target_orig_ip;
+                }
+            }
 
             tot_copy_resp_packs++;
             router_update(ip);

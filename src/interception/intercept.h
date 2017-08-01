@@ -59,6 +59,8 @@ typedef struct xcopy_srv_settings {
     time_t               accepted_tunnel_time;
 #endif
     uint64_t             sock_w_cnt;
+    uint32_t             docker_target_orig_ip;
+    uint32_t             docker_target_dst_ip;
     tc_pool_t           *pool;
     tc_pool_t           *cpool;
 #if (!TC_ADVANCED)
@@ -66,6 +68,7 @@ typedef struct xcopy_srv_settings {
 #endif
     char                *pid_file;       /* pid file */
     char                *bound_ip;       /* bound ip for security */
+    char                *dockered_ips;   /* bound ip for security */
     char                *log_path;       /* error log path */
 
     tunnel_basic_t       tunnel[MAX_FD_NUM];
