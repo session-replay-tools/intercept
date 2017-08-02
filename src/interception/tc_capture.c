@@ -178,7 +178,6 @@ resp_dispose(tc_iph_t *ip)
                     if (srv_settings.dockered_ips != NULL) {
                         if (ip->daddr == srv_settings.docker_target_dst_ip) {
                             ip->daddr = srv_settings.docker_target_orig_ip;
-                            tc_log_info(LOG_INFO, 0, "changed ip");
                         }
                     }
                     router_update(ip);
