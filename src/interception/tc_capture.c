@@ -106,11 +106,7 @@ tc_msg_event_proc(tc_event_t *rev)
         }
     }
 
-    msg.clt_ip = msg.clt_ip;
-    msg.clt_port = msg.clt_port;
     msg.type = ntohs(msg.type);
-    msg.target_ip = msg.target_ip;
-    msg.target_port = msg.target_port;
 
     switch (msg.type) {
         case CLIENT_ADD:
@@ -283,7 +279,7 @@ sniff_init(tc_event_loop_t *event_loop)
                 return TC_ERR;
             }
 
-            strcpy(devices->device[i++].name, d->name);
+            strncpy(devices->device[i++].name, d->name, MAX_DEVICE_NAME_LEN - 1);
         }
         devices->device_num = i;
 
@@ -328,6 +324,7 @@ server_init(tc_event_loop_t *event_loop, char *ip, uint16_t port)
 
     } else {
         if (tc_socket_listen(fd, ip, port) == TC_ERR) {
+            tc_socket_close(fd);
             return TC_ERR;
         }
 
@@ -335,16 +332,19 @@ server_init(tc_event_loop_t *event_loop, char *ip, uint16_t port)
 
         ev = tc_event_create(event_loop->pool, fd, tc_msg_event_accept, NULL);
         if (ev == NULL) {
+            tc_socket_close(fd);
             return TC_ERR;
         }
 
         if (tc_event_add(event_loop, ev, TC_EVENT_READ) == TC_EVENT_ERROR) {
+            tc_socket_close(fd);
             return TC_ERR;
         }
     }
 
     
     if (sniff_init(event_loop) != TC_OK) {
+        tc_socket_close(fd);
         return TC_ERR;
     }
 
