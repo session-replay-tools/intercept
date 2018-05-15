@@ -159,6 +159,11 @@ resp_dispose(tc_iph_t *ip)
     uint16_t           size_ip, size_tcp, tot_len;
     tc_tcph_t         *tcp;
 
+    if (ip->version != 4) {
+        tc_log_debug1(LOG_DEBUG, 0, "ip version:%d", ip->version);
+        return;
+    }
+
     if (ip->protocol == IPPROTO_TCP) {
         tot_resp_packs++;
 
@@ -279,7 +284,8 @@ sniff_init(tc_event_loop_t *event_loop)
                 return TC_ERR;
             }
 
-            strncpy(devices->device[i++].name, d->name, MAX_DEVICE_NAME_LEN - 1);
+            strncpy(devices->device[i++].name, d->name,
+                    MAX_DEVICE_NAME_LEN - 1);
         }
         devices->device_num = i;
 
