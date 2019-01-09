@@ -4,7 +4,7 @@
 + 2014.09  v1.0    intercept released
 
 ## Note
-1. It is tested on Linux only (kernal 2.6 or above)
+1. It is tested on Linux only (kernel 2.6 or above)
 2. Root privilege or the CAP_NET_RAW capability is required
 3. It only supports pcap 1.0.0 or higher
 
