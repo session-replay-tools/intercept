@@ -81,7 +81,7 @@ typedef struct tc_array_s       tc_array_t;
 
 #define OUTPUT_INTERVAL  30000
 
-#define CHECK_INTERVAL  5
+#define CHECK_INTERVAL  2
 #define DEFAULT_TIMEOUT 1200
 
 #define MAX_WRITE_TRIES 1024
