@@ -76,7 +76,7 @@ typedef struct tc_array_s       tc_array_t;
         tc_align((sizeof(tc_pool_t) + 2 * sizeof(tc_pool_large_t)),            \
                               TC_POOL_ALIGNMENT)
 
-/* default listening port for intercept */
+/* Default listening port for intercept */
 #define SERVER_PORT   36524
 
 #define OUTPUT_INTERVAL  30000
@@ -87,7 +87,7 @@ typedef struct tc_array_s       tc_array_t;
 #define MAX_WRITE_TRIES 1024
 #define MAX_READ_LOG_TRIES 65536
 
-/* max fd number for select */
+/* Max fd number for select */
 #define MAX_FD_NUM    1024
 #define MAX_FD_VALUE  (MAX_FD_NUM - 1)
 #define MAX_SINGLE_CONN_NUM 16
@@ -136,13 +136,13 @@ typedef struct tc_array_s       tc_array_t;
 
 #define MAX_ALLOWED_IP_NUM 32
 
-/* constants for netlink protocol */
+/* Constants for netlink protocol */
 #define FIREWALL_GROUP  0
 
-/* in defence of occuping too much memory */
+/* In defence of occuping too much memory */
 #define MAX_MEMORY_SIZE 1048576
 
-/* route flags */
+/* Route flags */
 #define  CLIENT_ADD   1
 #define  CLIENT_DEL   2
 
@@ -156,8 +156,8 @@ typedef struct iphdr  tc_iph_t;
 typedef struct tcphdr tc_tcph_t;
 
 /* 
- * 40 bytes available for TCP options 
- * we support 24 bytes for TCP options
+ * 40 bytes are available for TCP options, and we support up to 24 bytes
+ * for these options.
  */
 #define MAX_OPTION_LEN 24
 #define MAX_TCP_LEN_SUPPORTED (sizeof(tc_tcph_t) + MAX_OPTION_LEN)
@@ -170,7 +170,6 @@ typedef struct tcphdr tc_tcph_t;
 #define REP_MAX_USEFUL_SIZE REP_HEADER_SIZE
 #endif
 
-/* bool constants */
 #if (HAVE_STDBOOL_H)
 #include <stdbool.h>
 #else
@@ -192,7 +191,7 @@ typedef struct tcphdr tc_tcph_t;
 
 /*  
  *  Ethernet II header
- *  static header size: 14 bytes          
+ *  Static header size: 14 bytes          
  */ 
 struct ethernet_hdr {
     uint8_t  ether_dhost[ETHER_ADDR_LEN];
@@ -225,7 +224,7 @@ typedef struct devices_s{
 } devices_t;
 #endif
 
-/* global functions */
+/* Global functions */
 int daemonize(void);
 
 #define TC_OK      0

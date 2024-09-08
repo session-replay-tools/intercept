@@ -3,7 +3,7 @@
 
 static route_table_t  *table = NULL;
 
-/* initiate router table */
+/* Initiate router table */
 int
 router_init(tc_pool_t *pool)
 {
@@ -89,7 +89,7 @@ static void router_add_adjust(route_slot_t *slot, int key, int fd)
             ++i;
         }
 
-        /* TODO needs to be optimized */ 
+        /* TODO: Needs to be optimized */ 
         tmp = slot->items[i];
         slot->items[i] = item;
         item = tmp;
@@ -109,7 +109,7 @@ static void router_add_adjust(route_slot_t *slot, int key, int fd)
 }
 
 
-/* add item to the router table */
+/* Add item to the router table */
 void
 router_add(uint32_t clt_ip, uint16_t clt_port, uint32_t target_ip, 
         uint16_t target_port, int fd)
@@ -362,7 +362,7 @@ void router_stat(void)
 
 }
 
-/* destroy router table */
+/* Destroy router table */
 void
 router_destroy(tc_pool_t *pool)
 {

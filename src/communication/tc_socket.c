@@ -392,7 +392,7 @@ tc_socket_listen(int fd, const char *bind_ip, uint16_t port)
     local_addr.sin_family = AF_INET;
 
     if (bind_ip) {
-        /* set bind ip for security reasons */
+        /* Set bind ip for security reasons */
         inet_aton(bind_ip, &local_addr.sin_addr);
     }
 

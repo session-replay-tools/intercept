@@ -30,7 +30,7 @@ tc_event_add_timer(tc_pool_t *pool, tc_msec_t timer, void *data,
 
 
 /*
- * the event timer rbtree may contain the duplicate keys, however,
+ * The event timer rbtree may contain the duplicate keys, however,
  * it should not be a problem, because we use the rbtree to find
  * a minimum timer value only
  */

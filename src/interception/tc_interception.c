@@ -197,7 +197,7 @@ static int tc_nfq_proc_packet(struct nfq_q_handle *qh,
 
             if (pass_through_flag) {
 
-                /* pass through the firewall */
+                /* Pass through the firewall */
                 ret = nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
             } else {
 
@@ -210,7 +210,7 @@ static int tc_nfq_proc_packet(struct nfq_q_handle *qh,
                 tot_copy_resp_packs++;
                 router_update(ip);
 
-                /* drop the packet */
+                /* Drop the packet */
                 ret = nfq_set_verdict(qh, id, NF_DROP, 0, NULL);
             }
         } else {
@@ -314,7 +314,7 @@ tc_nl_event_proc(tc_event_t *rev)
 
         if (pass_through_flag) {
 
-            /* pass through the firewall */
+            /* Pass through the firewall */
             dispose_netlink_packet(rev->fd, NF_ACCEPT, packet_id);
             
         } else {
@@ -327,7 +327,7 @@ tc_nl_event_proc(tc_event_t *rev)
 
             tot_copy_resp_packs++;
             router_update(ip);
-            /* drop the packet */
+            /* Drop the packet */
             dispose_netlink_packet(rev->fd, NF_DROP, packet_id);
         }
     }
@@ -352,7 +352,7 @@ server_init(tc_event_loop_t *event_loop, char *ip, uint16_t port)
 
     pid = getpid();
 
-    /* init the listening socket */
+    /* Init the listening socket */
     if ((fd = tc_socket_init()) == TC_INVALID_SOCK) {
         return TC_ERR;
 
@@ -415,7 +415,7 @@ server_init(tc_event_loop_t *event_loop, char *ip, uint16_t port)
     return TC_OK;
 }
 
-/* clear resources for interception */
+/* Clear resources for interception */
 void
 server_over(void)
 {

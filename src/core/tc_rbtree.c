@@ -236,7 +236,7 @@ tc_rbtree_delete(tc_rbtree_t *tree,
         return;
     }
 
-    /* a delete fixup */
+    /* A delete fixup */
 
     while (temp != *root && tc_rbt_is_black(temp)) {
 

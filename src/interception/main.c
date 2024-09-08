@@ -99,7 +99,7 @@ retrieve_docker_addrs()
 
 
 #if (!TC_ADVANCED)
-/* retrieve ip addresses */
+/* Retrieve ip addresses */
 static int
 retrieve_ip_addr()
 {
@@ -335,7 +335,7 @@ set_details()
     for (n = tc_pagesize; n >>= 1; tc_pagesize_shift++) { /* void */ }
 
 #if (!TC_ADVANCED)
-    /* retrieve ip address */
+    /* Retrieve ip address */
     if (srv_settings.raw_ip_list != NULL) {
         tc_log_info(LOG_NOTICE, 0, "-x para:%s", srv_settings.raw_ip_list);
         retrieve_ip_addr();
@@ -376,7 +376,7 @@ set_details()
         retrieve_docker_addrs();
     }
 
-    /* daemonize */
+    /* Daemonize */
     if (srv_settings.do_daemonize) {
         if (sigignore(SIGHUP) == -1) {
             tc_log_info(LOG_ERR, errno, "failed to ignore SIGHUP");
@@ -391,7 +391,7 @@ set_details()
 }
 
 
-/* set default values for intercept */
+/* Set default values for intercept */
 static void
 settings_init(void)
 {
@@ -416,11 +416,11 @@ settings_init(void)
 static void
 output_for_debug()
 {
-    /* print out intercept version */
+    /* Print out intercept version */
     tc_log_info(LOG_NOTICE, 0, "intercept version:%s", VERSION);
     tc_log_info(LOG_NOTICE, 0, "intercept internal version:%d", 
             INTERNAL_VERSION);
-    /* print out intercept working mode */
+    /* Print out intercept working mode */
 #if (TC_NFQUEUE)
     tc_log_info(LOG_NOTICE, 0, "TC_NFQUEUE mode");
 #endif
@@ -490,7 +490,7 @@ main(int argc, char **argv)
         return -1;
     }
 
-    /* output debug info */
+    /* Output debug info */
     output_for_debug();
     if (set_details() == -1) {
         return -1;
@@ -509,7 +509,7 @@ main(int argc, char **argv)
 #endif
     tc_event_add_timer(s_evt_loop.pool, OUTPUT_INTERVAL, NULL, server_stat);
 
-    /* run now */
+    /* Run now */
     tc_event_proc_cycle(&s_evt_loop);
 
     server_release_resources();
