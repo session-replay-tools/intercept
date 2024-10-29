@@ -1,0 +1,13 @@
+diff --git a/src/interception/main.c b/src/interception/main.c
+index a0edd0d..ad48e19 100644
+--- a/src/interception/main.c
++++ b/src/interception/main.c
+@@ -509,7 +509,7 @@ main(int argc, char **argv)
+ #endif
+     tc_event_add_timer(s_evt_loop.pool, OUTPUT_INTERVAL, NULL, server_stat);
+ 
+-    /* run now */
++    /* Run now */
+     tc_event_proc_cycle(&s_evt_loop);
+ 
+     server_release_resources();
